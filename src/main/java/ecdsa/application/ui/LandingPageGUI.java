@@ -1,10 +1,5 @@
 package ecdsa.application.ui;
 
-import static ecdsa.application.constant.CommonConstant.APPLICATION_TITLE;
-import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
-import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
-import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
-
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -12,6 +7,8 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EtchedBorder;
 
 import lombok.extern.slf4j.Slf4j;
+
+import static ecdsa.application.constant.CommonConstant.*;
 
 /**
  * @author kareltan
@@ -79,13 +76,13 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
         mainPanel.add(buttonPanel, mainPanelConstraints);
 
         // Create the "Start" button
-        JButton startButton = new JButton("Start");
+        JButton startButton = new JButton(START);
         Font fontButton = new Font(DEFAULT_FONT, Font.BOLD, 16);
         startButton.setFont(fontButton);
         buttonPanel.add(startButton);
 
         // Create the "About" button
-        JButton aboutButton = new JButton("About");
+        JButton aboutButton = new JButton(ABOUT);
         aboutButton.setFont(fontButton);
         buttonPanel.add(aboutButton);
 
