@@ -1,6 +1,6 @@
 package ecdsa.application;
 
-import ecdsa.application.UI.LandingPageGUI;
+import ecdsa.application.ui.LandingPageGUI;
 
 /**
  * @author kareltan

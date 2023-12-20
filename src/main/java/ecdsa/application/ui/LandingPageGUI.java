@@ -1,6 +1,10 @@
-package ecdsa.application.UI;
+package ecdsa.application.ui;
 
 import static ecdsa.application.constant.CommonConstant.APPLICATION_TITLE;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
+import static ecdsa.application.constant.CommonConstant.START;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -14,15 +18,17 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author kareltan
  */
+@Slf4j
 public class LandingPageGUI extends NavigatorGUIAbstract {
 
   public void showGUI(){
     JFrame frame = new JFrame(APPLICATION_TITLE);
-    frame.setSize(1200, 900);
+    frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
     // Create a JPanel with left-aligned FlowLayout
@@ -30,22 +36,22 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
 
     // Create a JLabel for the title
     JLabel titleLabel = new JLabel("<html><div style='text-align: center;'>PENGEMBANGAN APLIKASI TANDA TANGAN DIGITAL<br> DENGAN PROSES SIGNING DAN VERIFICATION MENGGUNAKAN <br>ALGORITMA ELLIPTIC CURVE DIGITAL SIGNATURE YANG MENGGUNAKAN <br>FUNGSI HASH BERBASIS 256 BIT</div></html>");
-    Font fontTitle = new Font("Arial", Font.BOLD, 32);
+    Font fontTitle = new Font(DEFAULT_FONT, Font.BOLD, 32);
     titleLabel.setFont(fontTitle);
     titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
     titleLabel.setBorder(new EmptyBorder(30, 30, 30, 30));
     panel.add(titleLabel);
 
     // Create a JButton
-    JButton startButton = new JButton("Start");
-    Font fontButton = new Font("Arial", Font.BOLD, 20);
+    JButton startButton = new JButton(START);
+    Font fontButton = new Font(DEFAULT_FONT, Font.BOLD, 20);
     startButton.setFont(fontButton);
     startButton.setPreferredSize(new Dimension(100, 50));
     panel.add(startButton);
 
     // Add action listener to the button
     startButton.addActionListener(e -> {
-      System.out.println("Button Clicked!");
+      log.info("Button Clicked!");
       System.exit(0);
     });
 
