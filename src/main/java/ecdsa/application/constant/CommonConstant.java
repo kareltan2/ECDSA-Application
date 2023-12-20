@@ -5,7 +5,10 @@ package ecdsa.application.constant;
  */
 public class CommonConstant {
 
-  public static final String APPLICATION_TITLE = "secp256r1";
+  private CommonConstant(){
+  }
+
+  public static final String APPLICATION_TITLE = "ECDSA Application";
 
   public static final String CURVE = "secp256r1";
 
@@ -42,5 +45,11 @@ public class CommonConstant {
   public static final String SIGNED_FILE = "Signed File";
 
   public static final String CLEAR_INPUT = "Clear Input";
+
+  public static final String DEFAULT_FONT = "Arial";
+
+  public static final int DEFAULT_WIDTH = 1200;
+
+  public static final int DEFAULT_HEIGHT = 900;
 
 }
