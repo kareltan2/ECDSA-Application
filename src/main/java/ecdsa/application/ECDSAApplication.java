@@ -1,11 +1,6 @@
 package ecdsa.application;
 
-import ecdsa.application.ui.KeyGenerationPageGUI;
 import ecdsa.application.ui.LandingPageGUI;
-
-import javax.swing.*;
-
-import static ecdsa.application.constant.CommonConstant.APPLICATION_TITLE;
 
 /**
  * @author kareltan

@@ -9,6 +9,7 @@ import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
  * @author kareltan
  */
 public abstract class NavigatorGUIAbstract {
+
     protected JPanel createSectionPanel(String sectionTitle) {
         JPanel sectionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel sectionLabel = new JLabel(sectionTitle);

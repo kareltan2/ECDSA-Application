@@ -28,6 +28,8 @@ public class CommonConstant {
 
   public static final String KEY_GENERATION = "Key Generation";
 
+  public static final String VERIFICATION = "Verification";
+
   public static final String SIGNING = "Signing";
 
   public static final String ABOUT = "About";
@@ -57,5 +59,13 @@ public class CommonConstant {
   public static final int DEFAULT_WIDTH = 800;
 
   public static final int DEFAULT_HEIGHT = 600;
+
+  public static final String LANDING_PAGE_GUI = "Landing Page GUI";
+
+  public static final String DOCUMENTATION = "Documentation";
+
+  public static final String PAGE = "Page";
+
+  public static final String KEY_GENERATION_PAGE = KEY_GENERATION + PAGE;
 
 }

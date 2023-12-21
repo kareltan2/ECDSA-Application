@@ -1,11 +1,19 @@
 package ecdsa.application.ui;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import static ecdsa.application.constant.CommonConstant.APPLICATION_DESCRIPTION;
+import static ecdsa.application.constant.CommonConstant.APPLICATION_SLOGAN;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
+import static ecdsa.application.constant.CommonConstant.GENERATE;
 
-import static ecdsa.application.constant.CommonConstant.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 public class KeyGenerationPageGUI {
 
@@ -41,18 +49,15 @@ public class KeyGenerationPageGUI {
         keyGenConstraints.gridy = 2;
         keyGenConstraints.insets = new Insets(10, 10, 10, 10);
 
-        JButton generateButton = new JButton("Generate");
+        JButton generateButton = new JButton(GENERATE);
         Font fontButton = new Font(DEFAULT_FONT, Font.BOLD, 16);
         generateButton.setFont(fontButton);
         generateButton.setPreferredSize(new Dimension(250, 40));
         titlePanel.add(generateButton, keyGenConstraints);
 
         // Add action listener to the "Generate" button
-        generateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //TODO: Going to the next page
-            }
+        generateButton.addActionListener(e -> {
+            //TODO: Going to the next page
         });
 
         keyGenerationPanel.add(titlePanel);

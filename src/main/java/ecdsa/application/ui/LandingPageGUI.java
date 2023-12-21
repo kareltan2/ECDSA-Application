@@ -1,14 +1,30 @@
 package ecdsa.application.ui;
 
-import java.awt.*;
-import javax.swing.*;
+import static ecdsa.application.constant.CommonConstant.ABOUT;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
+import static ecdsa.application.constant.CommonConstant.DOCUMENTATION;
+import static ecdsa.application.constant.CommonConstant.LANDING_PAGE_GUI;
+import static ecdsa.application.constant.CommonConstant.START;
+
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EtchedBorder;
-
 import lombok.extern.slf4j.Slf4j;
-
-import static ecdsa.application.constant.CommonConstant.*;
 
 /**
  * @author kareltan
@@ -19,7 +35,7 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
     private final JFrame frame;
 
     public LandingPageGUI() {
-        this.frame = new JFrame("Landing Page GUI");
+        this.frame = new JFrame(LANDING_PAGE_GUI);
     }
 
     public void showGUI() {
@@ -41,7 +57,10 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
         mainPanelConstraints.insets = new Insets(10, 10, 10, 10);
 
         // Create the titleLabel and add it to the main panel
-        JLabel titleLabel = new JLabel("<html><div style='text-align: center;'>PENGEMBANGAN APLIKASI TANDA TANGAN DIGITAL<br> DENGAN PROSES SIGNING DAN VERIFICATION MENGGUNAKAN <br>ALGORITMA ELLIPTIC CURVE DIGITAL SIGNATURE YANG MENGGUNAKAN <br>FUNGSI HASH BERBASIS 256 BIT</div></html>");
+        JLabel titleLabel = new JLabel("<html><div style='text-align: center;'>PENGEMBANGAN APLIKASI TANDA TANGAN DIGITAL<br> "
+            + "DENGAN PROSES SIGNING DAN VERIFICATION MENGGUNAKAN "
+            + "<br>ALGORITMA ELLIPTIC CURVE DIGITAL SIGNATURE YANG MENGGUNAKAN "
+            + "<br>FUNGSI HASH BERBASIS 256 BIT</div></html>");
         Font fontTitle = new Font(DEFAULT_FONT, Font.BOLD, 20);
         titleLabel.setFont(fontTitle);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -60,7 +79,7 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
         mainPanel.add(usageTextPanel, mainPanelConstraints);
 
         // Create a panel for the "Documentation" section
-        JPanel documentationPanel = createSectionPanel("Documentation");
+        JPanel documentationPanel = createSectionPanel(DOCUMENTATION);
         mainPanelConstraints.gridy++;
         mainPanel.add(documentationPanel, mainPanelConstraints);
 
@@ -93,7 +112,7 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
         startButton.addActionListener(e -> {
             // Code to execute when the "Start" button is clicked
             DashboardPageGUI dashboardPageGUI = new DashboardPageGUI();
-            dashboardPageGUI.showGUI(); // Assuming showGUI() is a method to display the UI in KeyGenerationPage
+            dashboardPageGUI.showGUI();
             frame.dispose();
         });
 
