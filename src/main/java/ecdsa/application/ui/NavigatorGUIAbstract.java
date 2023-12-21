@@ -1,9 +1,12 @@
 package ecdsa.application.ui;
 
-import javax.swing.*;
-import java.awt.*;
-
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
+
+import java.awt.FlowLayout;
+import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  * @author kareltan
