@@ -18,8 +18,8 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
 
     private final JFrame frame;
 
-    public LandingPageGUI(JFrame frame) {
-        this.frame = frame;
+    public LandingPageGUI() {
+        this.frame = new JFrame("Landing Page GUI");
     }
 
     public void showGUI() {
@@ -30,7 +30,7 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
         JPanel mainPanel = new JPanel(new GridBagLayout());
 
         // Add a compound border to the main panel for the outside border
-        Border outsideBorder = BorderFactory.createEmptyBorder(40, 40, 40, 40);
+        Border outsideBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         Border insideBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
         mainPanel.setBorder(new CompoundBorder(outsideBorder, insideBorder));
 
@@ -89,6 +89,13 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
         // Adjust the width and height of the button
         startButton.setPreferredSize(new Dimension(150, 40));
         aboutButton.setPreferredSize(new Dimension(150, 40));
+
+        startButton.addActionListener(e -> {
+            // Code to execute when the "Start" button is clicked
+            DashboardPageGUI dashboardPageGUI = new DashboardPageGUI();
+            dashboardPageGUI.showGUI(); // Assuming showGUI() is a method to display the UI in KeyGenerationPage
+            frame.dispose();
+        });
 
         // Center the main panel on the frame
         frame.add(mainPanel);

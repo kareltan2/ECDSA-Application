@@ -48,8 +48,14 @@ public class CommonConstant {
 
   public static final String DEFAULT_FONT = "Arial";
 
-  public static final int DEFAULT_WIDTH = 1000;
+  public static final String APPLICATION_SLOGAN = "Empower Your Documents with Precision and Trust";
 
-  public static final int DEFAULT_HEIGHT = 800;
+  public static final String APPLICATION_DESCRIPTION = "Embark on a transformative journey into the future of document security with our<br>" +
+          " revolutionary application! Introducing a groundbreaking experience in digital<br> signatures – witness the " +
+          "seamless fusion of advanced<br> cryptography and cutting-edge technology.";
+
+  public static final int DEFAULT_WIDTH = 800;
+
+  public static final int DEFAULT_HEIGHT = 600;
 
 }
