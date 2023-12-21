@@ -4,6 +4,8 @@ import static ecdsa.application.constant.CommonConstant.ABOUT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
+import static ecdsa.application.constant.CommonConstant.DOCUMENTATION;
+import static ecdsa.application.constant.CommonConstant.LANDING_PAGE_GUI;
 import static ecdsa.application.constant.CommonConstant.START;
 
 import java.awt.Dimension;
@@ -32,8 +34,8 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
 
     private final JFrame frame;
 
-    public LandingPageGUI(JFrame frame) {
-        this.frame = frame;
+    public LandingPageGUI() {
+        this.frame = new JFrame(LANDING_PAGE_GUI);
     }
 
     public void showGUI() {
@@ -44,7 +46,7 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
         JPanel mainPanel = new JPanel(new GridBagLayout());
 
         // Add a compound border to the main panel for the outside border
-        Border outsideBorder = BorderFactory.createEmptyBorder(40, 40, 40, 40);
+        Border outsideBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         Border insideBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
         mainPanel.setBorder(new CompoundBorder(outsideBorder, insideBorder));
 
@@ -56,7 +58,8 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
 
         // Create the titleLabel and add it to the main panel
         JLabel titleLabel = new JLabel("<html><div style='text-align: center;'>PENGEMBANGAN APLIKASI TANDA TANGAN DIGITAL<br> "
-            + "DENGAN PROSES SIGNING DAN VERIFICATION MENGGUNAKAN <br>ALGORITMA ELLIPTIC CURVE DIGITAL SIGNATURE YANG MENGGUNAKAN "
+            + "DENGAN PROSES SIGNING DAN VERIFICATION MENGGUNAKAN "
+            + "<br>ALGORITMA ELLIPTIC CURVE DIGITAL SIGNATURE YANG MENGGUNAKAN "
             + "<br>FUNGSI HASH BERBASIS 256 BIT</div></html>");
         Font fontTitle = new Font(DEFAULT_FONT, Font.BOLD, 20);
         titleLabel.setFont(fontTitle);
@@ -76,7 +79,7 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
         mainPanel.add(usageTextPanel, mainPanelConstraints);
 
         // Create a panel for the "Documentation" section
-        JPanel documentationPanel = createSectionPanel("Documentation");
+        JPanel documentationPanel = createSectionPanel(DOCUMENTATION);
         mainPanelConstraints.gridy++;
         mainPanel.add(documentationPanel, mainPanelConstraints);
 
@@ -105,6 +108,13 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
         // Adjust the width and height of the button
         startButton.setPreferredSize(new Dimension(150, 40));
         aboutButton.setPreferredSize(new Dimension(150, 40));
+
+        startButton.addActionListener(e -> {
+            // Code to execute when the "Start" button is clicked
+            DashboardPageGUI dashboardPageGUI = new DashboardPageGUI();
+            dashboardPageGUI.showGUI();
+            frame.dispose();
+        });
 
         // Center the main panel on the frame
         frame.add(mainPanel);
