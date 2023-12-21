@@ -1,14 +1,18 @@
 package ecdsa.application.ui;
 
-import javax.swing.*;
-import java.awt.*;
-
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
+
+import java.awt.FlowLayout;
+import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  * @author kareltan
  */
 public abstract class NavigatorGUIAbstract {
+
     protected JPanel createSectionPanel(String sectionTitle) {
         JPanel sectionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel sectionLabel = new JLabel(sectionTitle);
