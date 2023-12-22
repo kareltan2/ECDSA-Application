@@ -9,9 +9,11 @@ import static ecdsa.application.constant.CommonConstant.*;
 
 public class SigningResultPageGUI extends NavigatorGUIAbstract{
     private final JFrame frame;
+    private JTextField textFieldFile;
 
     public SigningResultPageGUI() {
-        this.frame = new JFrame("Key Generation Result Page");
+        this.frame = new JFrame("Signing Result Page");
+        this.textFieldFile = new JTextField();
     }
 
     public void showGUI() {
@@ -29,7 +31,7 @@ public class SigningResultPageGUI extends NavigatorGUIAbstract{
 
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        mainPanel.add(createLabelAndTextField("File Chosen:"));
+        mainPanel.add(createLabelAndTextField("File Chosen:", textFieldFile.getText()));
 
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
@@ -93,6 +95,10 @@ public class SigningResultPageGUI extends NavigatorGUIAbstract{
                 }
             }
         });
+    }
+
+    public void setTextFieldFile(String text) {
+        textFieldFile.setText(text);
     }
 
 }

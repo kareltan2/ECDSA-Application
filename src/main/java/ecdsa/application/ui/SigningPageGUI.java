@@ -116,6 +116,7 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
 
     private void redirectToSignResultPage() {
         SigningResultPageGUI signingResultPageGUI = new SigningResultPageGUI();
+        signingResultPageGUI.setTextFieldFile(textFieldFile.getText());
         signingResultPageGUI.showGUI();
     }
 
