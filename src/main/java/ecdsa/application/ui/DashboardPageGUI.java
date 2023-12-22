@@ -57,7 +57,8 @@ public class DashboardPageGUI {
     }
 
     private JPanel createSigningPanel() {
-        return new JPanel();
+        SigningPageGUI signingPageGUI = new SigningPageGUI();
+        return signingPageGUI.createSigningPage(frame);
     }
 
     private JPanel createVerificationPanel() {

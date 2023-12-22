@@ -1,47 +1,39 @@
 package ecdsa.application.ui;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import static ecdsa.application.constant.CommonConstant.*;
 
-public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
+public class SigningResultPageGUI extends NavigatorGUIAbstract{
     private final JFrame frame;
 
-    public KeyGenerationResultPageGUI() {
+    public SigningResultPageGUI() {
         this.frame = new JFrame("Key Generation Result Page");
     }
 
     public void showGUI() {
-        // Create main panel with a BoxLayout along the Y-axis
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        // Add rigid areas for vertical spacing at the top
         mainPanel.add(Box.createVerticalGlue());
 
-        // Add title for "Save File"
-        JLabel saveFileTitle = new JLabel("SAVE GENERATING KEY FILE");
-        saveFileTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel signingFileTitle = new JLabel("Signing Result Page");
+        signingFileTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         Font fontPageTitle = new Font(DEFAULT_FONT, Font.BOLD, 20);
-        saveFileTitle.setFont(fontPageTitle);
-        saveFileTitle.setHorizontalAlignment(SwingConstants.CENTER);
-        mainPanel.add(saveFileTitle);
+        signingFileTitle.setFont(fontPageTitle);
+        signingFileTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        mainPanel.add(signingFileTitle);
 
-        // Add rigid area for spacing
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        // Add components for Private Key
-        mainPanel.add(createLabelAndTextField("Private Key File Name:"));
+        mainPanel.add(createLabelAndTextField("File Chosen:"));
 
-        // Add rigid area for spacing
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        // Add components for Public Key
-        mainPanel.add(createLabelAndTextField("Public Key File Name:"));
+        mainPanel.add(createLabelAndTextField("Signed File Name:"));
 
         // Add rigid area for spacing
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -102,6 +94,5 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
             }
         });
     }
-
 
 }
