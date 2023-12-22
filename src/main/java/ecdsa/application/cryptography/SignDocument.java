@@ -6,10 +6,12 @@ import static ecdsa.application.constant.CommonConstant.SHA256_ECDSA;
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.Signature;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author kareltan
  */
+@Slf4j
 public class SignDocument {
 
   private static byte[] signData(String data, PrivateKey privateKey) throws Exception {

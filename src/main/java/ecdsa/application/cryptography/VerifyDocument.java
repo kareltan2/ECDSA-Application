@@ -10,10 +10,12 @@ import java.security.NoSuchProviderException;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author kareltan
  */
+@Slf4j
 public class VerifyDocument {
 
   public boolean verifySignature(String data, byte[] signature, PublicKey publicKey)
