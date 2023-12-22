@@ -53,7 +53,7 @@ public class DashboardPageGUI {
 
     private JPanel createKeyGenerationPanel() {
         KeyGenerationPageGUI keyGenerationPageGUI = new KeyGenerationPageGUI();
-        return keyGenerationPageGUI.createKeyGenerationPage();
+        return keyGenerationPageGUI.createKeyGenerationPage(frame);
     }
 
     private JPanel createSigningPanel() {
@@ -71,4 +71,9 @@ public class DashboardPageGUI {
     private JPanel createQnaPanel() {
         return new JPanel();
     }
+
+    public void closingFrame() {
+        frame.dispose();
+    }
+
 }
