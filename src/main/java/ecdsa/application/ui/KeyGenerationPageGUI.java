@@ -5,19 +5,14 @@ import static ecdsa.application.constant.CommonConstant.APPLICATION_SLOGAN;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.GENERATE;
 
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
 
 public class KeyGenerationPageGUI {
 
-    public JPanel createKeyGenerationPage() {
+    public JPanel createKeyGenerationPage(JFrame frame) {
         JPanel keyGenerationPanel = new JPanel(new GridBagLayout());
 
         // Create a panel for the title and the "Generate" button
@@ -56,13 +51,64 @@ public class KeyGenerationPageGUI {
         titlePanel.add(generateButton, keyGenConstraints);
 
         // Add action listener to the "Generate" button
-        generateButton.addActionListener(e -> {
-            //TODO: Going to the next page
+        generateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showLoadingDialog(frame, new DashboardPageGUI());
+                frame.dispose();
+                // Add your key generation logic here
+                // Once the process is complete, close the loading dialog
+            }
         });
 
         keyGenerationPanel.add(titlePanel);
 
         return keyGenerationPanel;
+    }
+
+    private void showLoadingDialog(JFrame frame, DashboardPageGUI dashboardPageGUI) {
+        JDialog loadingDialog = new JDialog(frame, "Loading", true);
+        loadingDialog.setLayout(new BorderLayout());
+
+        // Add a label for "Please wait..."
+        JLabel pleaseWaitLabel = new JLabel("Please Wait...", SwingConstants.CENTER);
+        loadingDialog.add(pleaseWaitLabel, BorderLayout.NORTH);
+
+        // Add a progress bar to simulate loading
+        JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar.setStringPainted(true);
+        loadingDialog.add(progressBar, BorderLayout.CENTER);
+
+        loadingDialog.setSize(300, 120);
+        loadingDialog.setLocationRelativeTo(frame);
+        loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+        // Set up a timer to update the progress bar and close the loading dialog after 5 seconds
+        Timer timer = new Timer(30, new ActionListener() {
+            private int progress = 0;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (progress <= 100) {
+                    progressBar.setValue(progress);
+                    progress++;
+                } else {
+                    loadingDialog.dispose();
+                    dashboardPageGUI.closingFrame();
+                    redirectToKeyGenerationResultPage();
+                    ((Timer) e.getSource()).stop(); // Stop the timer after reaching 100%
+                }
+            }
+        });
+
+        timer.start();
+        loadingDialog.setVisible(true);
+    }
+
+    private void redirectToKeyGenerationResultPage() {
+        // Perform any necessary actions before redirecting
+        KeyGenerationResultPageGUI keyGenerationResultPage = new KeyGenerationResultPageGUI();
+        keyGenerationResultPage.showGUI();
     }
 
 }
