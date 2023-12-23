@@ -16,11 +16,14 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-public class DashboardPageGUI {
+/**
+ * @author kareltan
+ */
+public class MainPageGUI {
 
     private final JFrame frame;
 
-    public DashboardPageGUI() {
+    public MainPageGUI() {
         this.frame = new JFrame(KEY_GENERATION_PAGE);
     }
 
