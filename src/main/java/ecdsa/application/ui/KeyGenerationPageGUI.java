@@ -4,6 +4,8 @@ import static ecdsa.application.constant.CommonConstant.APPLICATION_DESCRIPTION;
 import static ecdsa.application.constant.CommonConstant.APPLICATION_SLOGAN;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.GENERATE;
+import static ecdsa.application.constant.CommonConstant.LOADING;
+import static ecdsa.application.constant.CommonConstant.PLEASE_WAIT;
 
 import ecdsa.application.cryptography.GenerateKeyPair;
 import java.awt.BorderLayout;
@@ -83,12 +85,12 @@ public class KeyGenerationPageGUI {
         return keyGenerationPanel;
     }
 
-    private void showLoadingDialog(JFrame frame, MainPageGUI dashboardPageGUI) {
-        JDialog loadingDialog = new JDialog(frame, "Loading", true);
+    private void showLoadingDialog(JFrame frame, MainPageGUI mainPageGUI) {
+        JDialog loadingDialog = new JDialog(frame, LOADING, true);
         loadingDialog.setLayout(new BorderLayout());
 
         // Add a label for "Please wait..."
-        JLabel pleaseWaitLabel = new JLabel("Please Wait...", SwingConstants.CENTER);
+        JLabel pleaseWaitLabel = new JLabel(PLEASE_WAIT, SwingConstants.CENTER);
         loadingDialog.add(pleaseWaitLabel, BorderLayout.NORTH);
 
         // Add a progress bar to simulate loading
@@ -102,7 +104,7 @@ public class KeyGenerationPageGUI {
 
         //Generate key pair logic
         try {
-            KeyPair keyPairGenerated =  generateKeyPair.generateKeyPair();
+            KeyPair keyPairGenerated = generateKeyPair.generateKeyPair();
 
             Timer timer = new Timer(30, new ActionListener() {
                 private int progress = 0;
@@ -114,7 +116,7 @@ public class KeyGenerationPageGUI {
                         progress++;
                     } else {
                         loadingDialog.dispose();
-                        dashboardPageGUI.closingFrame();
+                        mainPageGUI.closingFrame();
                         redirectToKeyGenerationResultPage(keyPairGenerated);
                         ((Timer) e.getSource()).stop(); // Stop the timer after reaching 100%
                     }

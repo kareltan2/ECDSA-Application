@@ -1,10 +1,18 @@
 package ecdsa.application.ui;
 
+import static ecdsa.application.constant.CommonConstant.BACK_TO_PREVIOUS_PAGE;
+import static ecdsa.application.constant.CommonConstant.CONFIRMATION_DIALOG_TITLE;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
-import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY;
-import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY;
+import static ecdsa.application.constant.CommonConstant.FOLDER_LABEL;
+import static ecdsa.application.constant.CommonConstant.KEY_GENERATION_RESULT_PAGE;
+import static ecdsa.application.constant.CommonConstant.LABEL_PRIVATE_KEY;
+import static ecdsa.application.constant.CommonConstant.LABEL_PUBLIC_KEY;
+import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
+import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_BACK;
+import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
+import static ecdsa.application.constant.CommonConstant.SAVE_TO_FILE;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -20,6 +28,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +44,7 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
     private final KeyPair keyPair;
 
     public KeyGenerationResultPageGUI(KeyPair keyPair) {
-        this.frame = new JFrame("Key Generation Result Page");
+        this.frame = new JFrame(KEY_GENERATION_RESULT_PAGE);
         this.keyPair = keyPair;
     }
 
@@ -45,10 +54,10 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         // Add rigid areas for vertical spacing at the top
-        mainPanel.add(Box.createVerticalGlue());
+        addRigidAreaForVerticalSpacing(mainPanel);
 
         // Add title for "Save File"
-        JLabel saveFileTitle = new JLabel("SAVE GENERATING KEY FILE");
+        JLabel saveFileTitle = new JLabel(KEY_GENERATION_RESULT_PAGE);
         saveFileTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         Font fontPageTitle = new Font(DEFAULT_FONT, Font.BOLD, 20);
         saveFileTitle.setFont(fontPageTitle);
@@ -56,38 +65,43 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
         mainPanel.add(saveFileTitle);
 
         // Add rigid area for spacing
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        addRigidAreaForSpacing(mainPanel, 0, 10);
 
         // Add components for Private Key
-        mainPanel.add(createLabelAndTextFieldByCategory(PRIVATE_KEY, "Private Key File Name:"));
+        JTextField privateKeyTextField = new JTextField();
+        mainPanel.add(createLabelAndTextField(privateKeyTextField, LABEL_PRIVATE_KEY, null, true));
 
         // Add rigid area for spacing
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        addRigidAreaForSpacing(mainPanel, 0, 10);
 
         // Add components for Public Key
-        mainPanel.add(createLabelAndTextFieldByCategory(PUBLIC_KEY, "Public Key File Name:"));
+        JTextField publicKeyTextField = new JTextField();
+        mainPanel.add(createLabelAndTextField(publicKeyTextField, LABEL_PUBLIC_KEY, null, true));
 
         // Add rigid area for spacing
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        addRigidAreaForSpacing(mainPanel, 0, 10);
 
         // Add file path panel
-        mainPanel.add(createLabelAndFileInputForSavePath("Folder:", frame));
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-        // Add components for Message Notes
-        mainPanel.add(createLabelAndScrollPane("Message Notes:", "Please be careful when inputting file names"));
+        JTextField folderNameTextField = new JTextField();
+        mainPanel.add(createLabelAndFileInputForSavePath(folderNameTextField, FOLDER_LABEL, frame, false));
 
         // Add rigid area for spacing
-        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        addRigidAreaForSpacing(mainPanel, 0, 10);
+
+        // Add components for Message Notes
+        mainPanel.add(createLabelAndScrollPane(MESSAGE_NOTES_LABEL, MESSAGE_CONTENT));
+
+        // Add rigid area for spacing
+        addRigidAreaForSpacing(mainPanel, 0, 10);
 
         // Add components for buttons
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton saveButton = new JButton("Save to File");
-        JButton backButton = new JButton("Back to Previous Page");
+        JButton saveButton = new JButton(SAVE_TO_FILE);
+        JButton backButton = new JButton(BACK_TO_PREVIOUS_PAGE);
         saveButton.setPreferredSize(new Dimension(160, 40));
         backButton.setPreferredSize(new Dimension(160, 40));
         buttonPanel.add(saveButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        addRigidAreaForSpacing(buttonPanel, 10, 0);
         buttonPanel.add(backButton);
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
 
@@ -110,21 +124,21 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
         saveButton.addActionListener(e -> {
             try {
                 //saving private key
-                saveKeyToFile(keyPair.getPrivate(), getFileTextField().getText() + "/" + getPrivateKeyTextField().getText());
+                saveKeyToFile(keyPair.getPrivate(), folderNameTextField.getText() + "/" + privateKeyTextField.getText());
 
                 //saving public key
-                saveKeyToFile(keyPair.getPublic(), getFileTextField().getText() + "/" + getPublicKeyTextField().getText());
+                saveKeyToFile(keyPair.getPublic(), folderNameTextField.getText() + "/" + publicKeyTextField.getText());
             } catch (Exception ex) {
                 log.error("Error while saving key pair with file name: {}, {}",
-                    getPrivateKeyTextField().getText(), getPublicKeyTextField().getText());
+                    privateKeyTextField.getText(), publicKeyTextField.getText());
                 throw new RuntimeException(ex);
             }
         });
 
         backButton.addActionListener(e -> {
             int result = JOptionPane.showConfirmDialog(frame,
-                    "Are you sure you want to back? All the data will be remove",
-                    "Confirmation", JOptionPane.YES_NO_OPTION);
+                MESSAGE_DIALOG_CONFIRMATION_BACK,
+                CONFIRMATION_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
 
             if (result == JOptionPane.YES_OPTION) {
                 MainPageGUI dashboardPageGUI = new MainPageGUI();
