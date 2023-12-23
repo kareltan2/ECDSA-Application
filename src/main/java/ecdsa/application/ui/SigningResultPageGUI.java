@@ -1,19 +1,34 @@
 package ecdsa.application.ui;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
 
-import static ecdsa.application.constant.CommonConstant.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
+/**
+ * @author kareltan
+ */
 public class SigningResultPageGUI extends NavigatorGUIAbstract{
+
     private final JFrame frame;
-    private JTextField textFieldFile;
 
     public SigningResultPageGUI() {
         this.frame = new JFrame("Signing Result Page");
-        this.textFieldFile = new JTextField();
     }
 
     public void showGUI() {
@@ -31,11 +46,11 @@ public class SigningResultPageGUI extends NavigatorGUIAbstract{
 
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        mainPanel.add(createLabelAndTextField("File Chosen:", textFieldFile.getText()));
+        mainPanel.add(createLabelAndTextField("File Chosen:", fileTextField.getText()));
 
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        mainPanel.add(createLabelAndTextField("Signed File Name:"));
+        mainPanel.add(createLabelAndTextField("Signed File", "Signed File Name:"));
 
         // Add rigid area for spacing
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -68,37 +83,27 @@ public class SigningResultPageGUI extends NavigatorGUIAbstract{
 
         // Set the frame properties
         frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
         // Add action listeners for the buttons
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Handle save button action
-                // TODO: Implement save functionality
-            }
+        saveButton.addActionListener(e -> {
+            // Handle save button action
+            // TODO: Implement save functionality
         });
 
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int result = JOptionPane.showConfirmDialog(frame,
-                        "Are you sure you want to back? All the data will be remove",
-                        "Confirmation", JOptionPane.YES_NO_OPTION);
+        backButton.addActionListener(e -> {
+            int result = JOptionPane.showConfirmDialog(frame,
+                    "Are you sure you want to back? All the data will be remove",
+                    "Confirmation", JOptionPane.YES_NO_OPTION);
 
-                if (result == JOptionPane.YES_OPTION) {
-                    DashboardPageGUI dashboardPageGUI = new DashboardPageGUI();
-                    dashboardPageGUI.showGUI();
-                    frame.dispose();
-                }
+            if (result == JOptionPane.YES_OPTION) {
+                MainPageGUI dashboardPageGUI = new MainPageGUI();
+                dashboardPageGUI.showGUI();
+                frame.dispose();
             }
         });
-    }
-
-    public void setTextFieldFile(String text) {
-        textFieldFile.setText(text);
     }
 
 }

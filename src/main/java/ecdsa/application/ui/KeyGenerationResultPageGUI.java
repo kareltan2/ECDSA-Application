@@ -1,18 +1,42 @@
 package ecdsa.application.ui;
 
-import javax.swing.*;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
+import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY;
+import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.security.KeyPair;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+import lombok.extern.slf4j.Slf4j;
 
-import static ecdsa.application.constant.CommonConstant.*;
-
+/**
+ * @author kareltan
+ */
+@Slf4j
 public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
+
     private final JFrame frame;
 
-    public KeyGenerationResultPageGUI() {
+    private final KeyPair keyPair;
+
+    public KeyGenerationResultPageGUI(KeyPair keyPair) {
         this.frame = new JFrame("Key Generation Result Page");
+        this.keyPair = keyPair;
     }
 
     public void showGUI() {
@@ -35,15 +59,19 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         // Add components for Private Key
-        mainPanel.add(createLabelAndTextField("Private Key File Name:"));
+        mainPanel.add(createLabelAndTextFieldByCategory(PRIVATE_KEY, "Private Key File Name:"));
 
         // Add rigid area for spacing
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         // Add components for Public Key
-        mainPanel.add(createLabelAndTextField("Public Key File Name:"));
+        mainPanel.add(createLabelAndTextFieldByCategory(PUBLIC_KEY, "Public Key File Name:"));
 
         // Add rigid area for spacing
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        // Add file path panel
+        mainPanel.add(createLabelAndFileInputForSavePath("Folder:", frame));
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         // Add components for Message Notes
@@ -74,34 +102,38 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
 
         // Set the frame properties
         frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
         // Add action listeners for the buttons
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Handle save button action
-                // TODO: Implement save functionality
+        saveButton.addActionListener(e -> {
+            try {
+                //saving private key
+                saveKeyToFile(keyPair.getPrivate(), getFileTextField().getText() + "/" + getPrivateKeyTextField().getText());
+
+                //saving public key
+                saveKeyToFile(keyPair.getPublic(), getFileTextField().getText() + "/" + getPublicKeyTextField().getText());
+            } catch (Exception ex) {
+                log.error("Error while saving key pair with file name: {}, {}",
+                    getPrivateKeyTextField().getText(), getPublicKeyTextField().getText());
+                throw new RuntimeException(ex);
             }
         });
 
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int result = JOptionPane.showConfirmDialog(frame,
-                        "Are you sure you want to back? All the data will be remove",
-                        "Confirmation", JOptionPane.YES_NO_OPTION);
+        backButton.addActionListener(e -> {
+            int result = JOptionPane.showConfirmDialog(frame,
+                    "Are you sure you want to back? All the data will be remove",
+                    "Confirmation", JOptionPane.YES_NO_OPTION);
 
-                if (result == JOptionPane.YES_OPTION) {
-                    DashboardPageGUI dashboardPageGUI = new DashboardPageGUI();
-                    dashboardPageGUI.showGUI();
-                    frame.dispose();
-                }
+            if (result == JOptionPane.YES_OPTION) {
+                MainPageGUI dashboardPageGUI = new MainPageGUI();
+                dashboardPageGUI.showGUI();
+                frame.dispose();
             }
         });
     }
 
+    //TODO: add popup success with button (next to signing or home button)
 
 }

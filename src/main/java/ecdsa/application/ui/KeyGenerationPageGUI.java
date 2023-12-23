@@ -5,12 +5,34 @@ import static ecdsa.application.constant.CommonConstant.APPLICATION_SLOGAN;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.GENERATE;
 
-import java.awt.*;
+import ecdsa.application.cryptography.GenerateKeyPair;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
+import java.security.KeyPair;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
+import javax.swing.WindowConstants;
+import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author kareltan
+ */
+@Slf4j
 public class KeyGenerationPageGUI {
+
+    private final GenerateKeyPair generateKeyPair = new GenerateKeyPair();
 
     public JPanel createKeyGenerationPage(JFrame frame) {
         JPanel keyGenerationPanel = new JPanel(new GridBagLayout());
@@ -51,14 +73,9 @@ public class KeyGenerationPageGUI {
         titlePanel.add(generateButton, keyGenConstraints);
 
         // Add action listener to the "Generate" button
-        generateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showLoadingDialog(frame, new DashboardPageGUI());
-                frame.dispose();
-                // Add your key generation logic here
-                // Once the process is complete, close the loading dialog
-            }
+        generateButton.addActionListener(e -> {
+            showLoadingDialog(frame, new MainPageGUI());
+            frame.dispose();
         });
 
         keyGenerationPanel.add(titlePanel);
@@ -66,7 +83,7 @@ public class KeyGenerationPageGUI {
         return keyGenerationPanel;
     }
 
-    private void showLoadingDialog(JFrame frame, DashboardPageGUI dashboardPageGUI) {
+    private void showLoadingDialog(JFrame frame, MainPageGUI dashboardPageGUI) {
         JDialog loadingDialog = new JDialog(frame, "Loading", true);
         loadingDialog.setLayout(new BorderLayout());
 
@@ -81,33 +98,40 @@ public class KeyGenerationPageGUI {
 
         loadingDialog.setSize(300, 120);
         loadingDialog.setLocationRelativeTo(frame);
-        loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        loadingDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        // Set up a timer to update the progress bar and close the loading dialog after 5 seconds
-        Timer timer = new Timer(30, new ActionListener() {
-            private int progress = 0;
+        //Generate key pair logic
+        try {
+            KeyPair keyPairGenerated =  generateKeyPair.generateKeyPair();
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (progress <= 100) {
-                    progressBar.setValue(progress);
-                    progress++;
-                } else {
-                    loadingDialog.dispose();
-                    dashboardPageGUI.closingFrame();
-                    redirectToKeyGenerationResultPage();
-                    ((Timer) e.getSource()).stop(); // Stop the timer after reaching 100%
+            Timer timer = new Timer(30, new ActionListener() {
+                private int progress = 0;
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (progress <= 100) {
+                        progressBar.setValue(progress);
+                        progress++;
+                    } else {
+                        loadingDialog.dispose();
+                        dashboardPageGUI.closingFrame();
+                        redirectToKeyGenerationResultPage(keyPairGenerated);
+                        ((Timer) e.getSource()).stop(); // Stop the timer after reaching 100%
+                    }
                 }
-            }
-        });
+            });
 
-        timer.start();
-        loadingDialog.setVisible(true);
+            timer.start();
+            loadingDialog.setVisible(true);
+        } catch (Exception ex) {
+            log.error("error occurred when generating key");
+            throw new RuntimeException(ex);
+        }
     }
 
-    private void redirectToKeyGenerationResultPage() {
+    private void redirectToKeyGenerationResultPage(KeyPair keyPairGenerated) {
         // Perform any necessary actions before redirecting
-        KeyGenerationResultPageGUI keyGenerationResultPage = new KeyGenerationResultPageGUI();
+        KeyGenerationResultPageGUI keyGenerationResultPage = new KeyGenerationResultPageGUI(keyPairGenerated);
         keyGenerationResultPage.showGUI();
     }
 

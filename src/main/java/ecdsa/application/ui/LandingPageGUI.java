@@ -111,7 +111,7 @@ public class LandingPageGUI extends NavigatorGUIAbstract {
 
         startButton.addActionListener(e -> {
             // Code to execute when the "Start" button is clicked
-            DashboardPageGUI dashboardPageGUI = new DashboardPageGUI();
+            MainPageGUI dashboardPageGUI = new MainPageGUI();
             dashboardPageGUI.showGUI();
             frame.dispose();
         });

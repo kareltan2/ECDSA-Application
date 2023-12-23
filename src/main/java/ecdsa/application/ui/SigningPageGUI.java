@@ -1,13 +1,37 @@
 package ecdsa.application.ui;
 
-import javax.swing.*;
-import java.awt.*;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
+import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
+import javax.swing.WindowConstants;
 
-import static ecdsa.application.constant.CommonConstant.*;
-
+/**
+ * @author kareltan
+ */
 public class SigningPageGUI extends NavigatorGUIAbstract {
+
+    //TODO: signing must be improved, condition: break
     public JPanel createSigningPage(JFrame frame) {
         JPanel signingPagePanel = new JPanel(new GridBagLayout());
         signingPagePanel.setLayout(new BoxLayout(signingPagePanel, BoxLayout.Y_AXIS));
@@ -22,10 +46,10 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
 
         signingPagePanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        signingPagePanel.add(createLabelAndTextField("Private Key:"));
+        signingPagePanel.add(createLabelAndTextFieldByCategory(PRIVATE_KEY, "Private Key:"));
         signingPagePanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        signingPagePanel.add(createLabelAndFileInput("File:", frame));
+        signingPagePanel.add(createLabelAndFileInputForECDSA("File:", frame));
         signingPagePanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         signingPagePanel.add(createLabelAndScrollPane("Message Notes:", "Please be careful when inputting file names"));
@@ -51,31 +75,23 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
 
         // Set the frame properties
         frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
         // Add action listeners for the buttons
-        signingButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Handle save button action
-                // TODO: Implement signing functionality
-                showLoadingDialog(frame, new DashboardPageGUI());
-            }
+        signingButton.addActionListener(e -> {
+            // Handle save button action
+            // TODO: Implement signing functionality
+            showLoadingDialog(frame, new MainPageGUI());
         });
 
-        clearButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clearButtonPopUpConfirmation(frame);
-            }
-        });
+        clearButton.addActionListener(e -> clearButtonPopUpConfirmation(frame));
 
         return signingPagePanel;
     }
 
-    private void showLoadingDialog(JFrame frame, DashboardPageGUI dashboardPageGUI) {
+    private void showLoadingDialog(JFrame frame, MainPageGUI dashboardPageGUI) {
         JDialog loadingDialog = new JDialog(frame, "Loading", true);
         loadingDialog.setLayout(new BorderLayout());
 
@@ -90,7 +106,7 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
 
         loadingDialog.setSize(300, 120);
         loadingDialog.setLocationRelativeTo(frame);
-        loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        loadingDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         // Set up a timer to update the progress bar and close the loading dialog after 5 seconds
         Timer timer = new Timer(30, new ActionListener() {
@@ -116,7 +132,6 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
 
     private void redirectToSignResultPage() {
         SigningResultPageGUI signingResultPageGUI = new SigningResultPageGUI();
-        signingResultPageGUI.setTextFieldFile(textFieldFile.getText());
         signingResultPageGUI.showGUI();
     }
 
