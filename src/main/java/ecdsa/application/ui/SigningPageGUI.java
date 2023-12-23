@@ -1,10 +1,18 @@
 package ecdsa.application.ui;
 
+import static ecdsa.application.constant.CommonConstant.CLEAR_INPUT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
-import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY;
+import static ecdsa.application.constant.CommonConstant.FILE_NAME;
+import static ecdsa.application.constant.CommonConstant.LABEL_PRIVATE_KEY;
+import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
+import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
+import static ecdsa.application.constant.CommonConstant.PLEASE_WAIT;
+import static ecdsa.application.constant.CommonConstant.SIGNING;
+import static ecdsa.application.constant.CommonConstant.SIGNING_PAGE;
 
+import ecdsa.application.cryptography.SignDocument;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -14,7 +22,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -22,46 +29,55 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author kareltan
  */
+@Slf4j
 public class SigningPageGUI extends NavigatorGUIAbstract {
 
-    //TODO: signing must be improved, condition: break
+    //TODO: send signed document to result gui and fix the signDocument logic
+    private final SignDocument signDocument = new SignDocument();
+
+    //TODO: fix choosing private key from document, now it choosing directory
+    //option1: fix generating key documents so can be read by this page
+    //option2: fix abstract to support scanning document
     public JPanel createSigningPage(JFrame frame) {
         JPanel signingPagePanel = new JPanel(new GridBagLayout());
         signingPagePanel.setLayout(new BoxLayout(signingPagePanel, BoxLayout.Y_AXIS));
-        signingPagePanel.add(Box.createVerticalGlue());
+        addRigidAreaForVerticalSpacing(signingPagePanel);
 
-        JLabel signingPageTitle = new JLabel("Signing Page");
+        JLabel signingPageTitle = new JLabel(SIGNING_PAGE);
         signingPageTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         Font fontPageTitle = new Font(DEFAULT_FONT, Font.BOLD, 20);
         signingPageTitle.setFont(fontPageTitle);
         signingPageTitle.setHorizontalAlignment(SwingConstants.CENTER);
         signingPagePanel.add(signingPageTitle);
+        addRigidAreaForSpacing(signingPagePanel, 0, 10);
 
-        signingPagePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        JTextField privateKeyTextField = new JTextField();
+        signingPagePanel.add(createLabelAndFileInputForSavePath(privateKeyTextField, LABEL_PRIVATE_KEY, frame, false));
+        addRigidAreaForSpacing(signingPagePanel, 0, 10);
 
-        signingPagePanel.add(createLabelAndTextFieldByCategory(PRIVATE_KEY, "Private Key:"));
-        signingPagePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        JTextField fileTextField = new JTextField();
+        signingPagePanel.add(createLabelAndFileInputForSavePath(fileTextField, FILE_NAME, frame, true));
+        addRigidAreaForSpacing(signingPagePanel, 0, 10);
 
-        signingPagePanel.add(createLabelAndFileInputForECDSA("File:", frame));
-        signingPagePanel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-        signingPagePanel.add(createLabelAndScrollPane("Message Notes:", "Please be careful when inputting file names"));
-        signingPagePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        signingPagePanel.add(createLabelAndScrollPane(MESSAGE_NOTES_LABEL, MESSAGE_CONTENT));
+        addRigidAreaForSpacing(signingPagePanel, 0, 10);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton signingButton = new JButton("Sign");
-        JButton clearButton = new JButton("Clear All");
+        JButton signingButton = new JButton(SIGNING);
+        JButton clearButton = new JButton(CLEAR_INPUT);
         signingButton.setPreferredSize(new Dimension(160, 40));
         clearButton.setPreferredSize(new Dimension(160, 40));
         buttonPanel.add(signingButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        addRigidAreaForSpacing(buttonPanel, 10, 0);
         buttonPanel.add(clearButton);
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
 
@@ -71,7 +87,7 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
         frame.add(signingPagePanel, BorderLayout.CENTER); // Set the main panel to the center
 
         // Add rigid area for vertical spacing at the bottom
-        signingPagePanel.add(Box.createVerticalGlue());
+        addRigidAreaForVerticalSpacing(signingPagePanel);
 
         // Set the frame properties
         frame.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -83,20 +99,20 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
         signingButton.addActionListener(e -> {
             // Handle save button action
             // TODO: Implement signing functionality
-            showLoadingDialog(frame, new MainPageGUI());
+            showLoadingDialog(frame, new MainPageGUI(), fileTextField.getText());
         });
 
-        clearButton.addActionListener(e -> clearButtonPopUpConfirmation(frame));
+        clearButton.addActionListener(e -> clearButtonPopUpConfirmation(frame, privateKeyTextField, null, fileTextField));
 
         return signingPagePanel;
     }
 
-    private void showLoadingDialog(JFrame frame, MainPageGUI dashboardPageGUI) {
+    private void showLoadingDialog(JFrame frame, MainPageGUI dashboardPageGUI, String filePath) {
         JDialog loadingDialog = new JDialog(frame, "Loading", true);
         loadingDialog.setLayout(new BorderLayout());
 
         // Add a label for "Please wait..."
-        JLabel pleaseWaitLabel = new JLabel("Please Wait...", SwingConstants.CENTER);
+        JLabel pleaseWaitLabel = new JLabel(PLEASE_WAIT, SwingConstants.CENTER);
         loadingDialog.add(pleaseWaitLabel, BorderLayout.NORTH);
 
         // Add a progress bar to simulate loading
@@ -120,7 +136,7 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
                 } else {
                     loadingDialog.dispose();
                     dashboardPageGUI.closingFrame();
-                    redirectToSignResultPage();
+                    redirectToSignResultPage(filePath);
                     ((Timer) e.getSource()).stop(); // Stop the timer after reaching 100%
                 }
             }
@@ -130,8 +146,8 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
         loadingDialog.setVisible(true);
     }
 
-    private void redirectToSignResultPage() {
-        SigningResultPageGUI signingResultPageGUI = new SigningResultPageGUI();
+    private void redirectToSignResultPage(String filePath) {
+        SigningResultPageGUI signingResultPageGUI = new SigningResultPageGUI(filePath);
         signingResultPageGUI.showGUI();
     }
 

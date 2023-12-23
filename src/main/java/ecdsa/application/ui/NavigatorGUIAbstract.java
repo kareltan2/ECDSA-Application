@@ -1,7 +1,9 @@
 package ecdsa.application.ui;
 
+import static ecdsa.application.constant.CommonConstant.CONFIRMATION_DIALOG_TITLE;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.FILE;
+import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_CLEAR;
 import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY;
 import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY;
 import static ecdsa.application.constant.CommonConstant.SIGNED_FILE;
@@ -12,6 +14,8 @@ import java.awt.Font;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Base64;
+import java.util.Objects;
+import java.util.Optional;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -34,14 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class NavigatorGUIAbstract {
 
-    protected JTextField privateKeyTextField;
-
-    protected JTextField publicKeyTextField;
-
-    protected JTextField fileTextField;
-
-    protected JTextField signedFileTextField;
-
     protected JPanel createSectionPanel(String sectionTitle) {
         JPanel sectionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel sectionLabel = new JLabel(sectionTitle);
@@ -54,7 +50,6 @@ public abstract class NavigatorGUIAbstract {
     protected JPanel createTextPanelWithBorder(String text) {
         JPanel textPanel = new JPanel();
 
-        // Adjust the padding around the text within the border
         int horizontalPadding = 20;
         int verticalPadding = 20;
 
@@ -68,24 +63,7 @@ public abstract class NavigatorGUIAbstract {
         return textPanel;
     }
 
-    protected JPanel createLabelAndTextFieldByCategory(String typeLabel, String labelText){
-        if(typeLabel.equalsIgnoreCase(PRIVATE_KEY)){
-            privateKeyTextField = new JTextField();
-            return createLabelAndTextField(privateKeyTextField, labelText);
-        } else if(typeLabel.equalsIgnoreCase(PUBLIC_KEY)){
-            publicKeyTextField = new JTextField();
-            return createLabelAndTextField(publicKeyTextField, labelText);
-        } else if(typeLabel.equalsIgnoreCase(FILE)){
-            fileTextField = new JTextField();
-            return createLabelAndTextField(fileTextField, labelText);
-        } else if(typeLabel.equalsIgnoreCase(SIGNED_FILE)){
-            signedFileTextField = new JTextField();
-            return createLabelAndTextField(signedFileTextField, labelText);
-        }
-        return new JPanel();
-    }
-
-    protected JPanel createLabelAndTextField(JTextField jTextField, String labelText) {
+    protected JPanel createLabelAndTextField(JTextField jTextField, String labelText, String text, boolean isEditable) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
@@ -93,6 +71,11 @@ public abstract class NavigatorGUIAbstract {
         Font fontTitle = new Font(DEFAULT_FONT, Font.BOLD, 15);
         label.setFont(fontTitle);
         label.setHorizontalAlignment(SwingConstants.CENTER);
+
+        if(!isEditable){
+            jTextField.setText(text);
+            jTextField.setEditable(false);
+        }
 
         jTextField.setPreferredSize(new Dimension(550, 40));
         jTextField.setMaximumSize(new Dimension(550, 40));
@@ -106,7 +89,8 @@ public abstract class NavigatorGUIAbstract {
         return panel;
     }
 
-    protected JPanel createLabelAndFileInputForSavePath(String labelText, JFrame frame) {
+    protected JPanel createLabelAndFileInputForSavePath(
+        JTextField jTextField, String labelText, JFrame frame, boolean isFilteredInput) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
@@ -115,78 +99,40 @@ public abstract class NavigatorGUIAbstract {
         label.setFont(fontTitle);
         label.setHorizontalAlignment(SwingConstants.CENTER);
 
-        fileTextField = new JTextField();
-        fileTextField.setEditable(false);  // Make the text field read-only
-        fileTextField.setPreferredSize(new Dimension(400, 40));
-        fileTextField.setMaximumSize(new Dimension(450, 40));
+        jTextField.setEditable(false);  // Make the text field read-only
+        jTextField.setPreferredSize(new Dimension(400, 40));
+        jTextField.setMaximumSize(new Dimension(450, 40));
 
         JButton browseButton = new JButton("Browse");
         browseButton.addActionListener(e -> {
             // Open a file chooser dialog
             JFileChooser fileChooser = new JFileChooser();
 
-            // Set the file chooser to allow only directories (folders)
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            if(isFilteredInput){
+                // Add a file filter to allow only doc, docx, and pdf files
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Documents", "doc", "docx", "pdf");
+                fileChooser.setFileFilter(filter);
+            } else {
+                // Set the file chooser to allow only directories (folders)
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            }
 
             int result = fileChooser.showOpenDialog(frame);
 
             // If a folder is chosen, set the folder path in the text field
             if (result == JFileChooser.APPROVE_OPTION) {
                 File selectedFolder = fileChooser.getSelectedFile();
-                fileTextField.setText(selectedFolder.getAbsolutePath());
+                jTextField.setText(selectedFolder.getAbsolutePath());
             }
         });
 
-        panel.add(Box.createHorizontalGlue());
+        addRigidAreaForHorizontalSpacing(panel);
         panel.add(label);
-        panel.add(Box.createRigidArea(new Dimension(10, 0)));
-        panel.add(fileTextField);
-        panel.add(Box.createRigidArea(new Dimension(10, 0)));
+        addRigidAreaForSpacing(panel, 10, 0);
+        panel.add(jTextField);
+        addRigidAreaForSpacing(panel, 10, 0);
         panel.add(browseButton);
-        panel.add(Box.createHorizontalGlue());
-
-        return panel;
-    }
-
-    protected JPanel createLabelAndFileInputForECDSA(String labelText, JFrame frame) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-
-        JLabel label = new JLabel(labelText);
-        Font fontTitle = new Font(DEFAULT_FONT, Font.BOLD, 15);
-        label.setFont(fontTitle);
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-
-        fileTextField = new JTextField();
-        fileTextField.setEditable(false);  // Make the text field read-only
-        fileTextField.setPreferredSize(new Dimension(400, 40));
-        fileTextField.setMaximumSize(new Dimension(450, 40));
-
-        JButton browseButton = new JButton("Browse");
-        browseButton.addActionListener(e -> {
-            // Open a file chooser dialog
-            JFileChooser fileChooser = new JFileChooser();
-
-            // Add a file filter to allow only doc, docx, and pdf files
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Documents", "doc", "docx", "pdf");
-            fileChooser.setFileFilter(filter);
-
-            int result = fileChooser.showOpenDialog(frame);
-
-            // If a file is chosen, set the file path in the text field
-            if (result == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                fileTextField.setText(selectedFile.getAbsolutePath());
-            }
-        });
-
-        panel.add(Box.createHorizontalGlue());
-        panel.add(label);
-        panel.add(Box.createRigidArea(new Dimension(10, 0)));
-        panel.add(fileTextField);
-        panel.add(Box.createRigidArea(new Dimension(10, 0)));
-        panel.add(browseButton);
-        panel.add(Box.createHorizontalGlue());
+        addRigidAreaForHorizontalSpacing(panel);
 
         return panel;
     }
@@ -201,61 +147,34 @@ public abstract class NavigatorGUIAbstract {
         JScrollPane scrollPane = new JScrollPane(textArea);
         textArea.setMaximumSize(new Dimension(300, 150));
 
-        panel.add(Box.createHorizontalGlue());
+        addRigidAreaForHorizontalSpacing(panel);
         panel.add(label);
-        panel.add(Box.createRigidArea(new Dimension(10, 0)));
+        addRigidAreaForSpacing(panel, 10, 0);
         panel.add(scrollPane);
-        panel.add(Box.createHorizontalGlue());
+        addRigidAreaForHorizontalSpacing(panel);
 
         return panel;
     }
 
-    protected JTextField getPrivateKeyTextField() {
-        return privateKeyTextField;
-    }
-
-    protected JTextField getPublicKeyTextField() {
-        return publicKeyTextField;
-    }
-
-    protected JTextField getFileTextField() {
-        return fileTextField;
-    }
-
-    protected void clearButtonPopUpConfirmation(JFrame frame) {
+    protected void clearButtonPopUpConfirmation(
+        JFrame frame, JTextField privateKeyTextField,
+        JTextField publicKeyTextField, JTextField fileTextField
+    ) {
         int result = JOptionPane.showConfirmDialog(frame,
-                "Are you sure you want to clear all the data?",
-                "Confirmation", JOptionPane.YES_NO_OPTION);
+                MESSAGE_DIALOG_CONFIRMATION_CLEAR,
+                CONFIRMATION_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
 
         if (result == JOptionPane.YES_OPTION) {
-            JTextField privateKeyJTextField = getPrivateKeyTextField();
-            JTextField fileTextJField = getFileTextField();
-            privateKeyJTextField.setText("");
-            fileTextJField.setText("");
+            clearTextFieldIfNotNull(privateKeyTextField);
+            clearTextFieldIfNotNull(publicKeyTextField);
+            clearTextFieldIfNotNull(fileTextField);
         }
     }
 
-    protected JPanel createLabelAndTextField(String labelText, String text) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-
-        JLabel label = new JLabel(labelText);
-        Font fontTitle = new Font(DEFAULT_FONT, Font.BOLD, 15);
-        label.setFont(fontTitle);
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-
-        fileTextField = new JTextField(text);
-        fileTextField.setEditable(false);
-        fileTextField.setPreferredSize(new Dimension(550, 40));
-        fileTextField.setMaximumSize(new Dimension(550, 40));
-
-        panel.add(Box.createHorizontalGlue());
-        panel.add(label);
-        panel.add(Box.createRigidArea(new Dimension(10, 0)));
-        panel.add(fileTextField);
-        panel.add(Box.createHorizontalGlue());
-
-        return panel;
+    protected void clearTextFieldIfNotNull(JTextField textField) {
+        if (textField != null) {
+            textField.setText("");
+        }
     }
 
     protected void saveKeyToFile(java.security.Key key, String fileName) throws Exception {
@@ -271,6 +190,18 @@ public abstract class NavigatorGUIAbstract {
             fos.write(content.getBytes());
             log.info("File saved to: " + fileName);
         }
+    }
+
+    protected void addRigidAreaForVerticalSpacing(JPanel panel){
+        panel.add(Box.createVerticalGlue());
+    }
+
+    protected void addRigidAreaForHorizontalSpacing(JPanel panel){
+        panel.add(Box.createHorizontalGlue());
+    }
+
+    protected void addRigidAreaForSpacing(JPanel panel, int width, int height){
+        panel.add(Box.createRigidArea(new Dimension(width, height)));
     }
 
 }
