@@ -8,6 +8,8 @@ import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMAT
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED;
 import static ecdsa.application.constant.CommonConstant.SIGNING;
 import static ecdsa.application.constant.CommonConstant.SUCCESS_DIALOG_TITLE;
+import static ecdsa.application.constant.CommonConstant.WARNING_EMPTY_FIELD_DIALOG_MESSAGE;
+import static ecdsa.application.constant.CommonConstant.WARNING_EMPTY_FIELD_DIALOG_TITLE;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -237,6 +239,14 @@ public abstract class NavigatorGUIAbstract {
         }
 
         frame.dispose();
+    }
+
+    protected void showPopUpWarningValidation(JFrame frame){
+        JOptionPane.showMessageDialog(frame, WARNING_EMPTY_FIELD_DIALOG_MESSAGE, WARNING_EMPTY_FIELD_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
+    }
+
+    protected boolean isEmpty(JTextField textField) {
+        return textField.getText().trim().isEmpty();
     }
 
 }

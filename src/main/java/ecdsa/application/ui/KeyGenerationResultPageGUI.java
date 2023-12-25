@@ -12,6 +12,8 @@ import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
 import static ecdsa.application.constant.CommonConstant.SAVE_TO_FILE;
 import static ecdsa.application.constant.CommonConstant.SIGNING;
+import static ecdsa.application.constant.CommonConstant.WARNING_EMPTY_FIELD_DIALOG_MESSAGE;
+import static ecdsa.application.constant.CommonConstant.WARNING_EMPTY_FIELD_DIALOG_TITLE;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -25,6 +27,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -121,13 +124,20 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
         // Add action listeners for the buttons
         saveButton.addActionListener(e -> {
             try {
-                //saving private key
-                saveKeyToFile(keyPair.getPrivate(), folderNameTextField.getText() + "/" + privateKeyTextField.getText());
+                // Validate fields
+                if (isEmpty(privateKeyTextField) || isEmpty(publicKeyTextField) || isEmpty(folderNameTextField)) {
+                    showPopUpWarningValidation(frame);
+                }
 
-                //saving public key
-                saveKeyToFile(keyPair.getPublic(), folderNameTextField.getText() + "/" + publicKeyTextField.getText());
+                else{
+                    //saving private key
+                    saveKeyToFile(keyPair.getPrivate(), folderNameTextField.getText() + "/" + privateKeyTextField.getText());
 
-                successActionWithPopUp(frame, SIGNING);
+                    //saving public key
+                    saveKeyToFile(keyPair.getPublic(), folderNameTextField.getText() + "/" + publicKeyTextField.getText());
+
+                    successActionWithPopUp(frame, SIGNING);
+                }
             } catch (Exception ex) {
                 log.error("Error while saving key pair with file name: {}, {}",
                     privateKeyTextField.getText(), publicKeyTextField.getText());

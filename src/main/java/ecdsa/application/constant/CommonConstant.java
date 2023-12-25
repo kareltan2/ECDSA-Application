@@ -112,7 +112,11 @@ public class CommonConstant {
 
   public static final String SUCCESS_DIALOG_TITLE = "Successfully Generated!";
 
-  public static final String MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED = SUCCESS_DIALOG_TITLE + WHITE_SPACE +  "Do You Want to Go to Next Step?";
+  public static final String MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED = SUCCESS_DIALOG_TITLE + WHITE_SPACE +  "Do you want to go to next step?";
+
+  public static final String WARNING_EMPTY_FIELD_DIALOG_TITLE = "Validation Error";
+
+  public static final String WARNING_EMPTY_FIELD_DIALOG_MESSAGE = "Please fill in all required fields.";
 
   public static final String CLEAR_INPUT = "Clear Input";
 
