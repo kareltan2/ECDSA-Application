@@ -110,7 +110,13 @@ public class CommonConstant {
 
   public static final String CONFIRMATION_DIALOG_TITLE = "Confirmation";
 
+  public static final String SUCCESS_DIALOG_TITLE = "Successfully Generated!";
+
+  public static final String MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED = SUCCESS_DIALOG_TITLE + WHITE_SPACE +  "Do You Want to Go to Next Step?";
+
   public static final String CLEAR_INPUT = "Clear Input";
+
+  public static final String BROWSE = "Browse";
 
 
 }

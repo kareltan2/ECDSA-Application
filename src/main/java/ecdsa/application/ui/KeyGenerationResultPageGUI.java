@@ -1,7 +1,6 @@
 package ecdsa.application.ui;
 
 import static ecdsa.application.constant.CommonConstant.BACK_TO_PREVIOUS_PAGE;
-import static ecdsa.application.constant.CommonConstant.CONFIRMATION_DIALOG_TITLE;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
@@ -10,9 +9,9 @@ import static ecdsa.application.constant.CommonConstant.KEY_GENERATION_RESULT_PA
 import static ecdsa.application.constant.CommonConstant.LABEL_PRIVATE_KEY;
 import static ecdsa.application.constant.CommonConstant.LABEL_PUBLIC_KEY;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
-import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_BACK;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
 import static ecdsa.application.constant.CommonConstant.SAVE_TO_FILE;
+import static ecdsa.application.constant.CommonConstant.SIGNING;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -26,7 +25,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -128,6 +126,8 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
 
                 //saving public key
                 saveKeyToFile(keyPair.getPublic(), folderNameTextField.getText() + "/" + publicKeyTextField.getText());
+
+                successActionWithPopUp(frame, SIGNING);
             } catch (Exception ex) {
                 log.error("Error while saving key pair with file name: {}, {}",
                     privateKeyTextField.getText(), publicKeyTextField.getText());
@@ -135,19 +135,7 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
             }
         });
 
-        backButton.addActionListener(e -> {
-            int result = JOptionPane.showConfirmDialog(frame,
-                MESSAGE_DIALOG_CONFIRMATION_BACK,
-                CONFIRMATION_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
-
-            if (result == JOptionPane.YES_OPTION) {
-                MainPageGUI dashboardPageGUI = new MainPageGUI();
-                dashboardPageGUI.showGUI();
-                frame.dispose();
-            }
-        });
+        backButton.addActionListener(e -> backActionWithPopUp(frame));
     }
-
-    //TODO: add popup success with button (next to signing or home button)
 
 }

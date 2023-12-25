@@ -12,9 +12,11 @@ import lombok.extern.slf4j.Slf4j;
  * @author kareltan
  */
 @Slf4j
-public class SignDocument {
+public class SignDocument extends ECDSACryptographyAbstract{
 
-  private static byte[] signData(String data, PrivateKey privateKey) throws Exception {
+  public byte[] signData(String data, PrivateKey privateKey) throws Exception {
+    addProvider();
+
     Signature signature = Signature.getInstance(SHA256_ECDSA, BC);
     signature.initSign(privateKey);
     signature.update(data.getBytes(StandardCharsets.UTF_8));

@@ -115,7 +115,7 @@ public class SigningResultPageGUI extends NavigatorGUIAbstract{
 
             if (result == JOptionPane.YES_OPTION) {
                 MainPageGUI dashboardPageGUI = new MainPageGUI();
-                dashboardPageGUI.showGUI();
+                dashboardPageGUI.showGUI(1);
                 frame.dispose();
             }
         });

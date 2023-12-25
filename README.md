@@ -60,3 +60,11 @@ to update version : (semantic version format : major.minor.patch-buildNumber)
 
 We use [SemVer](http://semver.org/) for versioning.
 
+## Index of MainPage Tab
+```
+- 0 -> Key generation
+- 1 -> Signing
+- 2 -> Verification
+- 3 -> About
+- 4 -> QnA
+```

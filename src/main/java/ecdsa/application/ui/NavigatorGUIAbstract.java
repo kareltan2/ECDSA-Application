@@ -1,12 +1,13 @@
 package ecdsa.application.ui;
 
+import static ecdsa.application.constant.CommonConstant.BROWSE;
 import static ecdsa.application.constant.CommonConstant.CONFIRMATION_DIALOG_TITLE;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
-import static ecdsa.application.constant.CommonConstant.FILE;
+import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_BACK;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_CLEAR;
-import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY;
-import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY;
-import static ecdsa.application.constant.CommonConstant.SIGNED_FILE;
+import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED;
+import static ecdsa.application.constant.CommonConstant.SIGNING;
+import static ecdsa.application.constant.CommonConstant.SUCCESS_DIALOG_TITLE;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -14,8 +15,6 @@ import java.awt.Font;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Base64;
-import java.util.Objects;
-import java.util.Optional;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -103,7 +102,7 @@ public abstract class NavigatorGUIAbstract {
         jTextField.setPreferredSize(new Dimension(400, 40));
         jTextField.setMaximumSize(new Dimension(450, 40));
 
-        JButton browseButton = new JButton("Browse");
+        JButton browseButton = new JButton(BROWSE);
         browseButton.addActionListener(e -> {
             // Open a file chooser dialog
             JFileChooser fileChooser = new JFileChooser();
@@ -202,6 +201,42 @@ public abstract class NavigatorGUIAbstract {
 
     protected void addRigidAreaForSpacing(JPanel panel, int width, int height){
         panel.add(Box.createRigidArea(new Dimension(width, height)));
+    }
+
+    protected void backActionWithPopUp(JFrame frame) {
+        int result = JOptionPane.showConfirmDialog(frame,
+            MESSAGE_DIALOG_CONFIRMATION_BACK,
+            CONFIRMATION_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
+
+        if (result == JOptionPane.YES_OPTION) {
+            MainPageGUI dashboardPageGUI = new MainPageGUI();
+            dashboardPageGUI.showGUI(0);
+            frame.dispose();
+        }
+    }
+
+    protected void successActionWithPopUp(JFrame frame, String nextAction) {
+        int result = JOptionPane .showConfirmDialog(frame,
+            MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED,
+            SUCCESS_DIALOG_TITLE, JOptionPane.YES_NO_OPTION
+        );
+
+        MainPageGUI dashboardPageGUI = new MainPageGUI();
+        //if user choose yes
+        if(result == JOptionPane.YES_OPTION) {
+            //if nextAction is signing
+            if(nextAction.equalsIgnoreCase(SIGNING)){
+                dashboardPageGUI.showGUI(1);
+            }
+            //if nextAction is verification
+        }
+
+        //if user choose no
+        else {
+            dashboardPageGUI.showGUI(0);
+        }
+
+        frame.dispose();
     }
 
 }
