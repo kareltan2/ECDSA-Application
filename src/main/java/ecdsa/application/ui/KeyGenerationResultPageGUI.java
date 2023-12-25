@@ -138,7 +138,7 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
             } catch (Exception ex) {
                 log.error("Error while saving key pair with file name: {}, {}",
                     privateKeyTextField.getText(), publicKeyTextField.getText());
-                throw new RuntimeException(ex);
+                showPopUpError(frame);
             }
         });
 

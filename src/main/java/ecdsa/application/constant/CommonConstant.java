@@ -118,6 +118,10 @@ public class CommonConstant {
 
   public static final String WARNING_EMPTY_FIELD_DIALOG_MESSAGE = "Please fill in all required fields.";
 
+  public static final String ERROR_DIALOG_TITLE = "Error Occurred";
+
+  public static final String ERROR_DIALOG_MESSAGE = "There is error occurred, please try again!";
+
   public static final String CLEAR_INPUT = "Clear Input";
 
   public static final String BROWSE = "Browse";

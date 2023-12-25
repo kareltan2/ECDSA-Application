@@ -6,6 +6,7 @@ import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
 import static ecdsa.application.constant.CommonConstant.FILE_NAME;
 import static ecdsa.application.constant.CommonConstant.LABEL_PRIVATE_KEY;
+import static ecdsa.application.constant.CommonConstant.LOADING;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
 import static ecdsa.application.constant.CommonConstant.PLEASE_WAIT;
@@ -21,6 +22,7 @@ import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.PrivateKey;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -95,11 +97,30 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        // Add action listeners for the buttons
         signingButton.addActionListener(e -> {
-            // Handle save button action
-            // TODO: Implement signing functionality
-            showLoadingDialog(frame, new MainPageGUI(), fileTextField.getText());
+            try {
+                // Validate fields
+                if (isEmpty(privateKeyTextField) || isEmpty(fileTextField)) {
+                    showPopUpWarningValidation(frame);
+                }
+
+                // Read the content of the private key file
+                String privateKeyFilePath = privateKeyTextField.getText();
+                String privateKeyContent = readFromFile(privateKeyFilePath);
+
+                // Convert the encoded private key content to a PrivateKey object
+                PrivateKey privateKey = getPrivateKeyFromString(privateKeyContent);
+
+                // Now you have the privateKey, you can use it for signing
+//                signDocument.signData(privateKey);
+
+                // Show loading dialog or perform other actions
+                showLoadingDialog(frame, new MainPageGUI(), fileTextField.getText());
+
+            } catch (Exception ex) {
+                log.error("Error during signing process with error: ", ex);
+                showPopUpError(frame);
+            }
         });
 
         clearButton.addActionListener(e -> clearButtonPopUpConfirmation(frame, privateKeyTextField, null, fileTextField));
@@ -108,7 +129,7 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
     }
 
     private void showLoadingDialog(JFrame frame, MainPageGUI dashboardPageGUI, String filePath) {
-        JDialog loadingDialog = new JDialog(frame, "Loading", true);
+        JDialog loadingDialog = new JDialog(frame, LOADING, true);
         loadingDialog.setLayout(new BorderLayout());
 
         // Add a label for "Please wait..."

@@ -1,8 +1,12 @@
 package ecdsa.application.ui;
 
+import static ecdsa.application.constant.CommonConstant.BC;
 import static ecdsa.application.constant.CommonConstant.BROWSE;
 import static ecdsa.application.constant.CommonConstant.CONFIRMATION_DIALOG_TITLE;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
+import static ecdsa.application.constant.CommonConstant.EC;
+import static ecdsa.application.constant.CommonConstant.ERROR_DIALOG_MESSAGE;
+import static ecdsa.application.constant.CommonConstant.ERROR_DIALOG_TITLE;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_BACK;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_CLEAR;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED;
@@ -16,6 +20,16 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -247,6 +261,25 @@ public abstract class NavigatorGUIAbstract {
 
     protected boolean isEmpty(JTextField textField) {
         return textField.getText().trim().isEmpty();
+    }
+
+    // Helper method to read the content of a file
+    protected String readFromFile(String filePath) throws IOException {
+        byte[] encoded = Files.readAllBytes(Paths.get(filePath));
+        return new String(encoded, StandardCharsets.UTF_8);
+    }
+
+    // Helper method to convert a Base64-encoded private key string to a PrivateKey object
+    protected PrivateKey getPrivateKeyFromString(String privateKeyString)
+        throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+        byte[] keyBytes = Base64.getDecoder().decode(privateKeyString);
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
+        KeyFactory keyFactory = KeyFactory.getInstance(EC, BC);
+        return keyFactory.generatePrivate(keySpec);
+    }
+
+    protected void showPopUpError(JFrame frame) {
+        JOptionPane.showMessageDialog(frame, ERROR_DIALOG_MESSAGE, ERROR_DIALOG_TITLE, JOptionPane.ERROR_MESSAGE);
     }
 
 }
