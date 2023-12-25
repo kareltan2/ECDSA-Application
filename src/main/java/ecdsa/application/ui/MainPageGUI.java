@@ -7,6 +7,7 @@ import static ecdsa.application.constant.CommonConstant.KEY_GENERATION;
 import static ecdsa.application.constant.CommonConstant.KEY_GENERATION_PAGE;
 import static ecdsa.application.constant.CommonConstant.QNA;
 import static ecdsa.application.constant.CommonConstant.SIGNING;
+import static ecdsa.application.constant.CommonConstant.SIGNING_PAGE;
 import static ecdsa.application.constant.CommonConstant.VERIFICATION;
 
 import java.awt.Dimension;
@@ -24,10 +25,10 @@ public class MainPageGUI {
     private final JFrame frame;
 
     public MainPageGUI() {
-        this.frame = new JFrame(KEY_GENERATION_PAGE);
+        this.frame = new JFrame();
     }
 
-    public void showGUI() {
+    public void showGUI(int index) {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setTabPlacement(SwingConstants.BOTTOM);
 
@@ -44,6 +45,7 @@ public class MainPageGUI {
         tabbedPane.addTab(VERIFICATION, verificationPanel);
         tabbedPane.addTab(ABOUT, aboutPanel);
         tabbedPane.addTab(QNA, qnaPanel);
+        tabbedPane.setSelectedIndex(index);
         tabbedPane.setPreferredSize(new Dimension(800, 400));
 
         frame.add(tabbedPane);
@@ -55,11 +57,13 @@ public class MainPageGUI {
     }
 
     private JPanel createKeyGenerationPanel() {
+        frame.setTitle(KEY_GENERATION_PAGE);
         KeyGenerationPageGUI keyGenerationPageGUI = new KeyGenerationPageGUI();
         return keyGenerationPageGUI.createKeyGenerationPage(frame);
     }
 
     private JPanel createSigningPanel() {
+        frame.setTitle(SIGNING_PAGE);
         SigningPageGUI signingPageGUI = new SigningPageGUI();
         return signingPageGUI.createSigningPage(frame);
     }
