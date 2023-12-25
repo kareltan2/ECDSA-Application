@@ -12,8 +12,6 @@ import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
 import static ecdsa.application.constant.CommonConstant.SAVE_TO_FILE;
 import static ecdsa.application.constant.CommonConstant.SIGNING;
-import static ecdsa.application.constant.CommonConstant.WARNING_EMPTY_FIELD_DIALOG_MESSAGE;
-import static ecdsa.application.constant.CommonConstant.WARNING_EMPTY_FIELD_DIALOG_TITLE;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -27,7 +25,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
