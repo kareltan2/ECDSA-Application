@@ -58,12 +58,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author kareltan
  */
-@Slf4j
 public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
 
     protected JPanel createSectionPanel(String sectionTitle) {
@@ -189,7 +187,7 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
 
     protected void clearButtonPopUpConfirmation(
         JFrame frame, JTextField privateKeyTextField,
-        JTextField publicKeyTextField, JTextField fileTextField
+        JTextField publicKeyTextField, JTextField fileTextField, JTextField signatureTextField
     ) {
         int result = JOptionPane.showConfirmDialog(frame,
                 MESSAGE_DIALOG_CONFIRMATION_CLEAR,
@@ -199,6 +197,7 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
             clearTextFieldIfNotNull(privateKeyTextField);
             clearTextFieldIfNotNull(publicKeyTextField);
             clearTextFieldIfNotNull(fileTextField);
+            clearTextFieldIfNotNull(signatureTextField);
         }
     }
 
@@ -208,7 +207,7 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
         }
     }
 
-    protected void saveKeyToFile(java.security.Key key, String fileName) throws Exception {
+    protected void saveKeyToFile(java.security.Key key, String fileName) throws IOException {
         // Convert key to Base64-encoded string
         String encodedKey = Base64.getEncoder().encodeToString(key.getEncoded());
 
@@ -216,7 +215,7 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
        this.saveToFile(encodedKey, fileName);
     }
 
-    protected void saveKeyToFile(byte[] signature, String fileName) throws Exception {
+    protected void saveKeyToFile(byte[] signature, String fileName) throws IOException {
         // Convert key to Base64-encoded string
         String encodedSignature = Base64.getEncoder().encodeToString(signature);
 
@@ -224,10 +223,9 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
         this.saveToFile(encodedSignature, fileName);
     }
 
-    protected void saveToFile(String content, String fileName) throws Exception {
+    protected void saveToFile(String content, String fileName) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(fileName)) {
             fos.write(content.getBytes());
-            log.info("File saved to: " + fileName);
         }
     }
 

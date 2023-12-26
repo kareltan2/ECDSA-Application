@@ -90,6 +90,8 @@ public class CommonConstant {
 
   public static final String SIGNING_PAGE = SIGNING + WHITE_SPACE + PAGE;
 
+  public static final String VERIFICATION_PAGE = VERIFICATION + WHITE_SPACE + PAGE;
+
   public static final String KEY_GENERATION_RESULT_PAGE = KEY_GENERATION + WHITE_SPACE + RESULT + WHITE_SPACE + PAGE;
 
   public static final String SIGNING_RESULT_PAGE = SIGNING + WHITE_SPACE + RESULT + WHITE_SPACE + PAGE;
@@ -142,5 +144,8 @@ public class CommonConstant {
 
   public static final String DOCUMENTS = "Documents";
 
+  public static final String SIGNATURE = "Signature";
+
+  public static final String VERIFICATION_DIALOG_TITLE = "Result Verification";
 
 }
