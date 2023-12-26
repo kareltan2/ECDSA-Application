@@ -39,8 +39,10 @@ import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -214,6 +216,14 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
        this.saveToFile(encodedKey, fileName);
     }
 
+    protected void saveKeyToFile(byte[] signature, String fileName) throws Exception {
+        // Convert key to Base64-encoded string
+        String encodedSignature = Base64.getEncoder().encodeToString(signature);
+
+        // Write the key to a file
+        this.saveToFile(encodedSignature, fileName);
+    }
+
     protected void saveToFile(String content, String fileName) throws Exception {
         try (FileOutputStream fos = new FileOutputStream(fileName)) {
             fos.write(content.getBytes());
@@ -306,6 +316,15 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance(EC, BC);
         return keyFactory.generatePrivate(keySpec);
+    }
+
+    protected PublicKey getPublicKeyFromString(String publicKeyString)
+        throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+        addProvider();
+        byte[] keyBytes = Base64.getDecoder().decode(publicKeyString);
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+        KeyFactory keyFactory = KeyFactory.getInstance(EC, BC);
+        return keyFactory.generatePublic(keySpec);
     }
 
     protected void showPopUpError(JFrame frame) {

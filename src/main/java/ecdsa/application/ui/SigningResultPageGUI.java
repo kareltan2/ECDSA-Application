@@ -121,11 +121,9 @@ public class SigningResultPageGUI extends NavigatorGUIAbstract{
                     return;
                 }
 
-                //check whether the input is pdf or word
-                if(isPDFExtensionFile(chosenFileTextField.getText())){
-                    //pdf editor
-                } else if(isWordExtensionFile(chosenFileTextField.getText())){
-                    //word editor
+                //save signature to file
+                if(validateExtensionFile(chosenFileTextField.getText())){
+                    saveKeyToFile(signature, folderNameTextField.getText() + "/" + signedFileTextField.getText());
                 } else {
                     showPopUpWarningDocumentValidationType(frame);
                     return;
@@ -134,7 +132,7 @@ public class SigningResultPageGUI extends NavigatorGUIAbstract{
                 // Show success message or perform other actions
                 successActionWithPopUp(frame, VERIFICATION);
             } catch (Exception ex) {
-                log.error("Error while saving signed PDF document with error: ", ex);
+                log.error("Error while saving signature with error: ", ex);
                 showPopUpError(frame);
             }
         });
