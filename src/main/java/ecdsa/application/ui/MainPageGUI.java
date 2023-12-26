@@ -9,6 +9,7 @@ import static ecdsa.application.constant.CommonConstant.QNA;
 import static ecdsa.application.constant.CommonConstant.SIGNING;
 import static ecdsa.application.constant.CommonConstant.SIGNING_PAGE;
 import static ecdsa.application.constant.CommonConstant.VERIFICATION;
+import static ecdsa.application.constant.CommonConstant.VERIFICATION_PAGE;
 
 import java.awt.Dimension;
 import javax.swing.JFrame;
@@ -69,7 +70,9 @@ public class MainPageGUI {
     }
 
     private JPanel createVerificationPanel() {
-        return new JPanel();
+        frame.setTitle(VERIFICATION_PAGE);
+        VerificationPageGUI verificationPageGUI = new VerificationPageGUI();
+        return verificationPageGUI.createVerificationPage(frame);
     }
 
     private JPanel createAboutPanel() {

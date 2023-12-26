@@ -135,7 +135,7 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
             }
         });
 
-        clearButton.addActionListener(e -> clearButtonPopUpConfirmation(frame, privateKeyTextField, null, fileTextField));
+        clearButton.addActionListener(e -> clearButtonPopUpConfirmation(frame, privateKeyTextField, null, fileTextField, null));
 
         return signingPagePanel;
     }
