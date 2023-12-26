@@ -4,14 +4,18 @@ import static ecdsa.application.constant.CommonConstant.BACK_TO_PREVIOUS_PAGE;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
-import static ecdsa.application.constant.CommonConstant.FOLDER_LABEL;
+import static ecdsa.application.constant.CommonConstant.FOLDER;
+import static ecdsa.application.constant.CommonConstant.FULLSTOPS;
 import static ecdsa.application.constant.CommonConstant.KEY_GENERATION_RESULT_PAGE;
 import static ecdsa.application.constant.CommonConstant.LABEL_PRIVATE_KEY;
 import static ecdsa.application.constant.CommonConstant.LABEL_PUBLIC_KEY;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
+import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY_EXTENSION;
+import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY_EXTENSION;
 import static ecdsa.application.constant.CommonConstant.SAVE_TO_FILE;
 import static ecdsa.application.constant.CommonConstant.SIGNING;
+import static ecdsa.application.constant.CommonConstant.SLASH;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -81,7 +85,7 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
 
         // Add file path panel
         JTextField folderNameTextField = new JTextField();
-        mainPanel.add(createLabelAndFileInputForSavePath(folderNameTextField, FOLDER_LABEL, frame, true, false));
+        mainPanel.add(createLabelAndFileInputForSavePath(folderNameTextField, FOLDER, frame, FOLDER));
 
         // Add rigid area for spacing
         addRigidAreaForSpacing(mainPanel, 0, 10);
@@ -128,10 +132,10 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
                 }
 
                 //saving private key
-                saveKeyToFile(keyPair.getPrivate(), folderNameTextField.getText() + "/" + privateKeyTextField.getText());
+                saveKeyToFile(keyPair.getPrivate(), folderNameTextField.getText() + SLASH + privateKeyTextField.getText() + FULLSTOPS + PRIVATE_KEY_EXTENSION);
 
                 //saving public key
-                saveKeyToFile(keyPair.getPublic(), folderNameTextField.getText() + "/" + publicKeyTextField.getText());
+                saveKeyToFile(keyPair.getPublic(), folderNameTextField.getText() + SLASH + publicKeyTextField.getText() + FULLSTOPS + PUBLIC_KEY_EXTENSION);
 
                 successActionWithPopUp(frame, SIGNING);
             } catch (Exception ex) {

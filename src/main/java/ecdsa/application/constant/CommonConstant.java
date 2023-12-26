@@ -12,7 +12,9 @@ public class CommonConstant {
 
   public static final String WHITE_SPACE = " ";
 
-  public static final String APPLICATION_TITLE = "ECDSA Application";
+  public static final String FULLSTOPS = ".";
+
+  public static final String SLASH = "/";
 
   public static final String CURVE = "secp256r1";
 
@@ -47,26 +49,28 @@ public class CommonConstant {
   public static final String FILE_NAME = "File Name";
 
   public static final String PRIVATE_KEY = "Private Key";
-  public static final String LABEL_PRIVATE_KEY = PRIVATE_KEY + WHITE_SPACE + FILE_NAME + COLON;
+
+  public static final String LABEL_PRIVATE_KEY = PRIVATE_KEY + WHITE_SPACE + FILE_NAME;
 
   public static final String PUBLIC_KEY = "Public Key";
-  public static final String LABEL_PUBLIC_KEY = PUBLIC_KEY + WHITE_SPACE + FILE_NAME + COLON;
+
+  public static final String LABEL_PUBLIC_KEY = PUBLIC_KEY + WHITE_SPACE + FILE_NAME;
 
   public static final String FILE = "File";
 
+  public static final String ORIGINAL_FILE = "Original File";
+
   public static final String CHOSEN = "Chosen";
 
-  public static final String FILE_CHOSEN_LABEL = FILE + WHITE_SPACE + CHOSEN + COLON;
+  public static final String FILE_CHOSEN_LABEL = FILE + WHITE_SPACE + CHOSEN;
 
-  public static final String FOLDER = "Folder";
-
-  public static final String FOLDER_LABEL = FOLDER + COLON;
+  public static final String FOLDER = "Target Folder";
 
   public static final String SIGNED = "Signed";
 
-  public static final String SIGNED_FILE = SIGNED + WHITE_SPACE + FILE;
+  public static final String SIGNED_FILE = SIGNED + WHITE_SPACE + FILE_NAME;
 
-  public static final String SIGNED_FILE_NAME_LABEL = SIGNED + WHITE_SPACE + FILE_NAME + COLON;
+  public static final String SIGNED_FILE_NAME_LABEL = SIGNED + WHITE_SPACE + FILE_NAME;
 
   public static final String DEFAULT_FONT = "Arial";
 
@@ -147,5 +151,16 @@ public class CommonConstant {
   public static final String SIGNATURE = "Signature";
 
   public static final String VERIFICATION_DIALOG_TITLE = "Result Verification";
+
+  public static final String VERIFICATION_DIALOG_MESSAGE_VALID = "Result Verification: Signature valid!";
+
+  public static final String VERIFICATION_DIALOG_MESSAGE_NOT_VALID = "Result Verification: Signature not valid!";
+
+  public static final String PRIVATE_KEY_EXTENSION = "pvk";
+
+  public static final String PUBLIC_KEY_EXTENSION = "pbk";
+
+  public static final String SIGNATURE_EXTENSION = "sig";
+
 
 }

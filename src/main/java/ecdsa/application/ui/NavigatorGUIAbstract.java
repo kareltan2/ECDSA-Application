@@ -10,10 +10,17 @@ import static ecdsa.application.constant.CommonConstant.DOCX;
 import static ecdsa.application.constant.CommonConstant.EC;
 import static ecdsa.application.constant.CommonConstant.ERROR_DIALOG_MESSAGE;
 import static ecdsa.application.constant.CommonConstant.ERROR_DIALOG_TITLE;
+import static ecdsa.application.constant.CommonConstant.FOLDER;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_BACK;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_CLEAR;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED;
 import static ecdsa.application.constant.CommonConstant.PDF;
+import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY;
+import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY_EXTENSION;
+import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY;
+import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY_EXTENSION;
+import static ecdsa.application.constant.CommonConstant.SIGNATURE;
+import static ecdsa.application.constant.CommonConstant.SIGNATURE_EXTENSION;
 import static ecdsa.application.constant.CommonConstant.SIGNING;
 import static ecdsa.application.constant.CommonConstant.SUCCESS_DIALOG_TITLE;
 import static ecdsa.application.constant.CommonConstant.VERIFICATION;
@@ -116,8 +123,7 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
     }
 
     protected JPanel createLabelAndFileInputForSavePath(
-        JTextField jTextField, String labelText, JFrame frame, boolean isFolderInput,
-        boolean isFilteredInput) {
+        JTextField jTextField, String labelText, JFrame frame, String filterType) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
@@ -135,15 +141,25 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
             // Open a file chooser dialog
             JFileChooser fileChooser = new JFileChooser();
 
-            if(isFilteredInput){
+            if(filterType.equalsIgnoreCase(DOCUMENTS)){
                 // Add a file filter to allow only doc, docx, and pdf files
                 FileNameExtensionFilter filter = new FileNameExtensionFilter(DOCUMENTS, DOC, DOCX, PDF);
                 fileChooser.setFileFilter(filter);
-            } else if(isFolderInput){
+                fileChooser.setAcceptAllFileFilterUsed(false);
+            } else if(filterType.equalsIgnoreCase(FOLDER)){
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            } else if(filterType.equalsIgnoreCase(PRIVATE_KEY)){
+                FileNameExtensionFilter filter = new FileNameExtensionFilter(PRIVATE_KEY, PRIVATE_KEY_EXTENSION);
+                fileChooser.setFileFilter(filter);
+                fileChooser.setAcceptAllFileFilterUsed(false);
+            } else if(filterType.equalsIgnoreCase(PUBLIC_KEY)){
+                FileNameExtensionFilter filter = new FileNameExtensionFilter(PUBLIC_KEY, PUBLIC_KEY_EXTENSION);
+                fileChooser.setFileFilter(filter);
+                fileChooser.setAcceptAllFileFilterUsed(false);
             } else {
-                // Set the file chooser to allow only directories (folders)
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                FileNameExtensionFilter filter = new FileNameExtensionFilter(SIGNATURE, SIGNATURE_EXTENSION);
+                fileChooser.setFileFilter(filter);
+                fileChooser.setAcceptAllFileFilterUsed(false);
             }
 
             int result = fileChooser.showOpenDialog(frame);
