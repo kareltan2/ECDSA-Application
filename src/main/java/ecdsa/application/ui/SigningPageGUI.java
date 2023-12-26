@@ -6,6 +6,7 @@ import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
 import static ecdsa.application.constant.CommonConstant.FILE_NAME;
 import static ecdsa.application.constant.CommonConstant.LABEL_PRIVATE_KEY;
+import static ecdsa.application.constant.CommonConstant.LOADING;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
 import static ecdsa.application.constant.CommonConstant.PLEASE_WAIT;
@@ -21,6 +22,8 @@ import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.charset.StandardCharsets;
+import java.security.PrivateKey;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -41,12 +44,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SigningPageGUI extends NavigatorGUIAbstract {
 
-    //TODO: send signed document to result gui and fix the signDocument logic
     private final SignDocument signDocument = new SignDocument();
 
-    //TODO: fix choosing private key from document, now it choosing directory
-    //option1: fix generating key documents so can be read by this page
-    //option2: fix abstract to support scanning document
     public JPanel createSigningPage(JFrame frame) {
         JPanel signingPagePanel = new JPanel(new GridBagLayout());
         signingPagePanel.setLayout(new BoxLayout(signingPagePanel, BoxLayout.Y_AXIS));
@@ -61,11 +60,11 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
         addRigidAreaForSpacing(signingPagePanel, 0, 10);
 
         JTextField privateKeyTextField = new JTextField();
-        signingPagePanel.add(createLabelAndFileInputForSavePath(privateKeyTextField, LABEL_PRIVATE_KEY, frame, false));
+        signingPagePanel.add(createLabelAndFileInputForSavePath(privateKeyTextField, LABEL_PRIVATE_KEY, frame, false, false));
         addRigidAreaForSpacing(signingPagePanel, 0, 10);
 
         JTextField fileTextField = new JTextField();
-        signingPagePanel.add(createLabelAndFileInputForSavePath(fileTextField, FILE_NAME, frame, true));
+        signingPagePanel.add(createLabelAndFileInputForSavePath(fileTextField, FILE_NAME, frame, false, true));
         addRigidAreaForSpacing(signingPagePanel, 0, 10);
 
         signingPagePanel.add(createLabelAndScrollPane(MESSAGE_NOTES_LABEL, MESSAGE_CONTENT));
@@ -95,11 +94,45 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        // Add action listeners for the buttons
         signingButton.addActionListener(e -> {
-            // Handle save button action
-            // TODO: Implement signing functionality
-            showLoadingDialog(frame, new MainPageGUI(), fileTextField.getText());
+            try {
+                // Validate fields
+                if (isEmpty(privateKeyTextField) || isEmpty(fileTextField)) {
+                    showPopUpWarningValidation(frame);
+                    return;
+                }
+
+                //validate the extension file
+                if(!validateExtensionFile(fileTextField.getText())){
+                    showPopUpWarningDocumentValidationType(frame);
+                    return;
+                }
+
+                // Read the content of the private key file
+                String privateKeyContent = readFromFile(privateKeyTextField.getText());
+
+                // Convert the encoded private key content to a PrivateKey object
+                PrivateKey privateKey;
+                try {
+                    privateKey = getPrivateKeyFromString(privateKeyContent);
+                } catch (Exception keyEx){
+                    log.debug("Decoded private key from file is failed with path: {}", privateKeyTextField.getText());
+                    showPopUpWarningKeyNotValid(frame);
+                    return;
+                }
+
+                // Read the data from the bytes of the file
+                byte[] fileBytes = readBytesFromFile(fileTextField.getText());
+                String data = new String(fileBytes, StandardCharsets.UTF_8);
+
+                byte[] signature = signDocument.signData(data, privateKey);
+
+                // Show loading dialog or perform other actions
+                showLoadingDialog(frame, new MainPageGUI(), fileTextField.getText(), signature);
+            } catch (Exception ex) {
+                log.error("Error during signing process with error: ", ex);
+                showPopUpError(frame);
+            }
         });
 
         clearButton.addActionListener(e -> clearButtonPopUpConfirmation(frame, privateKeyTextField, null, fileTextField));
@@ -107,8 +140,9 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
         return signingPagePanel;
     }
 
-    private void showLoadingDialog(JFrame frame, MainPageGUI dashboardPageGUI, String filePath) {
-        JDialog loadingDialog = new JDialog(frame, "Loading", true);
+    private void showLoadingDialog(JFrame frame, MainPageGUI dashboardPageGUI, String filePath,
+        byte[] signature) {
+        JDialog loadingDialog = new JDialog(frame, LOADING, true);
         loadingDialog.setLayout(new BorderLayout());
 
         // Add a label for "Please wait..."
@@ -136,7 +170,7 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
                 } else {
                     loadingDialog.dispose();
                     dashboardPageGUI.closingFrame();
-                    redirectToSignResultPage(filePath);
+                    redirectToSignResultPage(filePath, signature);
                     ((Timer) e.getSource()).stop(); // Stop the timer after reaching 100%
                 }
             }
@@ -146,8 +180,8 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
         loadingDialog.setVisible(true);
     }
 
-    private void redirectToSignResultPage(String filePath) {
-        SigningResultPageGUI signingResultPageGUI = new SigningResultPageGUI(filePath);
+    private void redirectToSignResultPage(String filePath, byte[] signature) {
+        SigningResultPageGUI signingResultPageGUI = new SigningResultPageGUI(filePath, signature);
         signingResultPageGUI.showGUI();
     }
 

@@ -112,11 +112,35 @@ public class CommonConstant {
 
   public static final String SUCCESS_DIALOG_TITLE = "Successfully Generated!";
 
-  public static final String MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED = SUCCESS_DIALOG_TITLE + WHITE_SPACE +  "Do You Want to Go to Next Step?";
+  public static final String MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED = SUCCESS_DIALOG_TITLE + WHITE_SPACE +  "Do you want to go to next step?";
+
+  public static final String WARNING_EMPTY_FIELD_DIALOG_TITLE = "Validation Error";
+
+  public static final String WARNING_EMPTY_FIELD_DIALOG_MESSAGE = "Please fill in all required fields.";
+
+  public static final String WARNING_EXTENSION_FILE_DIALOG_TITLE = "Validation Document Type Error";
+
+  public static final String WARNING_EXTENSION_FILE_DIALOG_MESSAGE = "Unsupported Type of Document";
+
+  public static final String WARNING_KEY_NOT_VALID_DIALOG_TITLE = "Key is not valid!";
+
+  public static final String WARNING_KEY_NOT_VALID_DIALOG_MESSAGE = "Inputted key is not valid, please check the inputted key file!";
+
+  public static final String ERROR_DIALOG_TITLE = "Error Occurred";
+
+  public static final String ERROR_DIALOG_MESSAGE = "There is error occurred, please try again!";
 
   public static final String CLEAR_INPUT = "Clear Input";
 
   public static final String BROWSE = "Browse";
+
+  public static final String DOC = "doc";
+
+  public static final String DOCX = "docx";
+
+  public static final String PDF = "pdf";
+
+  public static final String DOCUMENTS = "Documents";
 
 
 }

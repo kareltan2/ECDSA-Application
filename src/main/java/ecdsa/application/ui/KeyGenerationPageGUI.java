@@ -16,7 +16,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -32,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author kareltan
  */
 @Slf4j
-public class KeyGenerationPageGUI {
+public class KeyGenerationPageGUI extends NavigatorGUIAbstract {
 
     private final GenerateKeyPair generateKeyPair = new GenerateKeyPair();
 
@@ -125,9 +128,9 @@ public class KeyGenerationPageGUI {
 
             timer.start();
             loadingDialog.setVisible(true);
-        } catch (Exception ex) {
-            log.error("error occurred when generating key");
-            throw new RuntimeException(ex);
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
+            log.error("error occurred when generating key, with error", e.getCause());
+            showPopUpError(frame);
         }
     }
 

@@ -6,12 +6,14 @@ import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
 import static ecdsa.application.constant.CommonConstant.FILE_CHOSEN_LABEL;
+import static ecdsa.application.constant.CommonConstant.FOLDER_LABEL;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_BACK;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
 import static ecdsa.application.constant.CommonConstant.SAVE_TO_FILE;
 import static ecdsa.application.constant.CommonConstant.SIGNED_FILE;
 import static ecdsa.application.constant.CommonConstant.SIGNING_RESULT_PAGE;
+import static ecdsa.application.constant.CommonConstant.VERIFICATION;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -28,22 +30,26 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author kareltan
  */
+@Slf4j
 public class SigningResultPageGUI extends NavigatorGUIAbstract{
 
     private final JFrame frame;
 
     private final String filePath;
 
-    public SigningResultPageGUI(String filePath) {
+    private final byte[] signature;
+
+    public SigningResultPageGUI(String filePath, byte[] signature) {
         this.frame = new JFrame(SIGNING_RESULT_PAGE);
         this.filePath = filePath;
+        this.signature = signature;
     }
 
-    //TODO: how to save document which same extension like the input
     public void showGUI() {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -68,6 +74,10 @@ public class SigningResultPageGUI extends NavigatorGUIAbstract{
         mainPanel.add(createLabelAndTextField(signedFileTextField, SIGNED_FILE, null, true));
 
         // Add rigid area for spacing
+        addRigidAreaForSpacing(mainPanel, 0, 10);
+
+        JTextField folderNameTextField = new JTextField();
+        mainPanel.add(createLabelAndFileInputForSavePath(folderNameTextField, FOLDER_LABEL, frame, true, false));
         addRigidAreaForSpacing(mainPanel, 0, 10);
 
         // Add components for Message Notes
@@ -104,8 +114,27 @@ public class SigningResultPageGUI extends NavigatorGUIAbstract{
 
         // Add action listeners for the buttons
         saveButton.addActionListener(e -> {
-            // Handle save button action
-            // TODO: Implement save functionality
+            try {
+                // Validate if the signedFileTextField is empty
+                if (isEmpty(signedFileTextField) || isEmpty(chosenFileTextField)) {
+                    showPopUpWarningValidation(frame);
+                    return;
+                }
+
+                //save signature to file
+                if(validateExtensionFile(chosenFileTextField.getText())){
+                    saveKeyToFile(signature, folderNameTextField.getText() + "/" + signedFileTextField.getText());
+                } else {
+                    showPopUpWarningDocumentValidationType(frame);
+                    return;
+                }
+
+                // Show success message or perform other actions
+                successActionWithPopUp(frame, VERIFICATION);
+            } catch (Exception ex) {
+                log.error("Error while saving signature with error: ", ex);
+                showPopUpError(frame);
+            }
         });
 
         backButton.addActionListener(e -> {

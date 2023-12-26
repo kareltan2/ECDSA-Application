@@ -81,7 +81,7 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
 
         // Add file path panel
         JTextField folderNameTextField = new JTextField();
-        mainPanel.add(createLabelAndFileInputForSavePath(folderNameTextField, FOLDER_LABEL, frame, false));
+        mainPanel.add(createLabelAndFileInputForSavePath(folderNameTextField, FOLDER_LABEL, frame, true, false));
 
         // Add rigid area for spacing
         addRigidAreaForSpacing(mainPanel, 0, 10);
@@ -121,6 +121,12 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
         // Add action listeners for the buttons
         saveButton.addActionListener(e -> {
             try {
+                // Validate fields
+                if (isEmpty(privateKeyTextField) || isEmpty(publicKeyTextField) || isEmpty(folderNameTextField)) {
+                    showPopUpWarningValidation(frame);
+                    return;
+                }
+
                 //saving private key
                 saveKeyToFile(keyPair.getPrivate(), folderNameTextField.getText() + "/" + privateKeyTextField.getText());
 
@@ -131,7 +137,7 @@ public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
             } catch (Exception ex) {
                 log.error("Error while saving key pair with file name: {}, {}",
                     privateKeyTextField.getText(), publicKeyTextField.getText());
-                throw new RuntimeException(ex);
+                showPopUpError(frame);
             }
         });
 

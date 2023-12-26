@@ -1,19 +1,48 @@
 package ecdsa.application.ui;
 
+import static ecdsa.application.constant.CommonConstant.BC;
 import static ecdsa.application.constant.CommonConstant.BROWSE;
 import static ecdsa.application.constant.CommonConstant.CONFIRMATION_DIALOG_TITLE;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
+import static ecdsa.application.constant.CommonConstant.DOC;
+import static ecdsa.application.constant.CommonConstant.DOCUMENTS;
+import static ecdsa.application.constant.CommonConstant.DOCX;
+import static ecdsa.application.constant.CommonConstant.EC;
+import static ecdsa.application.constant.CommonConstant.ERROR_DIALOG_MESSAGE;
+import static ecdsa.application.constant.CommonConstant.ERROR_DIALOG_TITLE;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_BACK;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_CLEAR;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED;
+import static ecdsa.application.constant.CommonConstant.PDF;
 import static ecdsa.application.constant.CommonConstant.SIGNING;
 import static ecdsa.application.constant.CommonConstant.SUCCESS_DIALOG_TITLE;
+import static ecdsa.application.constant.CommonConstant.VERIFICATION;
+import static ecdsa.application.constant.CommonConstant.WARNING_EMPTY_FIELD_DIALOG_MESSAGE;
+import static ecdsa.application.constant.CommonConstant.WARNING_EMPTY_FIELD_DIALOG_TITLE;
+import static ecdsa.application.constant.CommonConstant.WARNING_EXTENSION_FILE_DIALOG_MESSAGE;
+import static ecdsa.application.constant.CommonConstant.WARNING_EXTENSION_FILE_DIALOG_TITLE;
+import static ecdsa.application.constant.CommonConstant.WARNING_KEY_NOT_VALID_DIALOG_MESSAGE;
+import static ecdsa.application.constant.CommonConstant.WARNING_KEY_NOT_VALID_DIALOG_TITLE;
 
+import ecdsa.application.cryptography.ECDSACryptographyAbstract;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -35,7 +64,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author kareltan
  */
 @Slf4j
-public abstract class NavigatorGUIAbstract {
+public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
 
     protected JPanel createSectionPanel(String sectionTitle) {
         JPanel sectionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -89,7 +118,8 @@ public abstract class NavigatorGUIAbstract {
     }
 
     protected JPanel createLabelAndFileInputForSavePath(
-        JTextField jTextField, String labelText, JFrame frame, boolean isFilteredInput) {
+        JTextField jTextField, String labelText, JFrame frame, boolean isFolderInput,
+        boolean isFilteredInput) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
@@ -109,11 +139,13 @@ public abstract class NavigatorGUIAbstract {
 
             if(isFilteredInput){
                 // Add a file filter to allow only doc, docx, and pdf files
-                FileNameExtensionFilter filter = new FileNameExtensionFilter("Documents", "doc", "docx", "pdf");
+                FileNameExtensionFilter filter = new FileNameExtensionFilter(DOCUMENTS, DOC, DOCX, PDF);
                 fileChooser.setFileFilter(filter);
+            } else if(isFolderInput){
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             } else {
                 // Set the file chooser to allow only directories (folders)
-                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             }
 
             int result = fileChooser.showOpenDialog(frame);
@@ -184,6 +216,14 @@ public abstract class NavigatorGUIAbstract {
        this.saveToFile(encodedKey, fileName);
     }
 
+    protected void saveKeyToFile(byte[] signature, String fileName) throws Exception {
+        // Convert key to Base64-encoded string
+        String encodedSignature = Base64.getEncoder().encodeToString(signature);
+
+        // Write the key to a file
+        this.saveToFile(encodedSignature, fileName);
+    }
+
     protected void saveToFile(String content, String fileName) throws Exception {
         try (FileOutputStream fos = new FileOutputStream(fileName)) {
             fos.write(content.getBytes());
@@ -227,6 +267,8 @@ public abstract class NavigatorGUIAbstract {
             //if nextAction is signing
             if(nextAction.equalsIgnoreCase(SIGNING)){
                 dashboardPageGUI.showGUI(1);
+            } else if(nextAction.equalsIgnoreCase(VERIFICATION)){
+                dashboardPageGUI.showGUI(2);
             }
             //if nextAction is verification
         }
@@ -237,6 +279,79 @@ public abstract class NavigatorGUIAbstract {
         }
 
         frame.dispose();
+    }
+
+    protected void showPopUpWarningValidation(JFrame frame){
+        JOptionPane.showMessageDialog(frame, WARNING_EMPTY_FIELD_DIALOG_MESSAGE, WARNING_EMPTY_FIELD_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
+    }
+
+    protected void showPopUpWarningDocumentValidationType(JFrame frame){
+        JOptionPane.showMessageDialog(frame, WARNING_EXTENSION_FILE_DIALOG_MESSAGE, WARNING_EXTENSION_FILE_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
+    }
+
+    protected void showPopUpWarningKeyNotValid(JFrame frame){
+        JOptionPane.showMessageDialog(frame, WARNING_KEY_NOT_VALID_DIALOG_MESSAGE, WARNING_KEY_NOT_VALID_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
+    }
+
+    protected boolean isEmpty(JTextField textField) {
+        return textField.getText().trim().isEmpty();
+    }
+
+    // Helper method to read the content of a file
+    protected String readFromFile(String filePath) throws IOException {
+        byte[] encoded = Files.readAllBytes(Paths.get(filePath));
+        return new String(encoded, StandardCharsets.UTF_8);
+    }
+
+    protected byte[] readBytesFromFile(String filePath) throws IOException {
+        Path path = Paths.get(filePath);
+        return Files.readAllBytes(path);
+    }
+
+    // Helper method to convert a Base64-encoded private key string to a PrivateKey object
+    protected PrivateKey getPrivateKeyFromString(String privateKeyString)
+        throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+        addProvider();
+        byte[] keyBytes = Base64.getDecoder().decode(privateKeyString);
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
+        KeyFactory keyFactory = KeyFactory.getInstance(EC, BC);
+        return keyFactory.generatePrivate(keySpec);
+    }
+
+    protected PublicKey getPublicKeyFromString(String publicKeyString)
+        throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+        addProvider();
+        byte[] keyBytes = Base64.getDecoder().decode(publicKeyString);
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+        KeyFactory keyFactory = KeyFactory.getInstance(EC, BC);
+        return keyFactory.generatePublic(keySpec);
+    }
+
+    protected void showPopUpError(JFrame frame) {
+        JOptionPane.showMessageDialog(frame, ERROR_DIALOG_MESSAGE, ERROR_DIALOG_TITLE, JOptionPane.ERROR_MESSAGE);
+    }
+
+    protected byte[] combineDataWithSignature(byte[] originalData, byte[] signature) {
+        // Concatenate the original data and the signature
+        byte[] combinedData = new byte[originalData.length + signature.length];
+        System.arraycopy(originalData, 0, combinedData, 0, originalData.length);
+        System.arraycopy(signature, 0, combinedData, originalData.length, signature.length);
+        return combinedData;
+    }
+
+    protected boolean validateExtensionFile(String filePath){
+        return filePath.contains(DOC)
+            || filePath.contains(DOCX)
+            || filePath.contains(PDF);
+    }
+
+    protected boolean isWordExtensionFile(String filePath){
+        return filePath.contains(DOC)
+            || filePath.contains(DOCX);
+    }
+
+    protected boolean isPDFExtensionFile(String filePath){
+        return filePath.contains(PDF);
     }
 
 }
