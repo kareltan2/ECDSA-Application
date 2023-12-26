@@ -1,6 +1,7 @@
 package ecdsa.application.cryptography;
 
 import static ecdsa.application.constant.CommonConstant.BC;
+import static ecdsa.application.constant.CommonConstant.CURVE;
 import static ecdsa.application.constant.CommonConstant.SHA256_ECDSA;
 
 import java.nio.charset.StandardCharsets;
@@ -21,11 +22,16 @@ public class SignDocument extends ECDSACryptographyAbstract{
   public byte[] signData(String data, PrivateKey privateKey)
       throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException {
     addProvider();
+    log.info("Starting generate signature with data: {}, privateKey: {}", data, privateKey);
 
     Signature signature = Signature.getInstance(SHA256_ECDSA, BC);
     signature.initSign(privateKey);
     signature.update(data.getBytes(StandardCharsets.UTF_8));
-    return signature.sign();
+
+    byte[] signatureBytes = signature.sign();
+    log.info("Successfully generate signature with value: {}", signatureBytes);
+
+    return signatureBytes;
   }
 
 }
