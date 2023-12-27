@@ -70,19 +70,16 @@ public class MainPageGUI {
     }
 
     private JPanel createKeyGenerationPanel() {
-        frame.setTitle(KEY_GENERATION_PAGE);
         KeyGenerationPageGUI keyGenerationPageGUI = new KeyGenerationPageGUI();
         return keyGenerationPageGUI.createKeyGenerationPage(frame);
     }
 
     private JPanel createSigningPanel() {
-        frame.setTitle(SIGNING_PAGE);
         SigningPageGUI signingPageGUI = new SigningPageGUI();
         return signingPageGUI.createSigningPage(frame);
     }
 
     private JPanel createVerificationPanel() {
-        frame.setTitle(VERIFICATION_PAGE);
         VerificationPageGUI verificationPageGUI = new VerificationPageGUI();
         return verificationPageGUI.createVerificationPage(frame);
     }
