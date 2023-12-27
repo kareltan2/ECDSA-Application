@@ -85,7 +85,8 @@ public class MainPageGUI {
     }
 
     private JPanel createAboutPanel() {
-        return new JPanel();
+        AboutPageGUI aboutPageGUI = new AboutPageGUI();
+        return aboutPageGUI.createAboutPage();
     }
 
     private JPanel createQnaPanel() {
