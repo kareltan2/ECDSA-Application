@@ -1,40 +1,8 @@
 package ecdsa.application.ui;
 
-import static ecdsa.application.constant.CommonConstant.BC;
-import static ecdsa.application.constant.CommonConstant.BROWSE;
-import static ecdsa.application.constant.CommonConstant.CONFIRMATION_DIALOG_TITLE;
-import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
-import static ecdsa.application.constant.CommonConstant.DOC;
-import static ecdsa.application.constant.CommonConstant.DOCUMENTS;
-import static ecdsa.application.constant.CommonConstant.DOCX;
-import static ecdsa.application.constant.CommonConstant.EC;
-import static ecdsa.application.constant.CommonConstant.ERROR_DIALOG_MESSAGE;
-import static ecdsa.application.constant.CommonConstant.ERROR_DIALOG_TITLE;
-import static ecdsa.application.constant.CommonConstant.FOLDER;
-import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_BACK;
-import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_CLEAR;
-import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED;
-import static ecdsa.application.constant.CommonConstant.PDF;
-import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY;
-import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY_EXTENSION;
-import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY;
-import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY_EXTENSION;
-import static ecdsa.application.constant.CommonConstant.SIGNATURE;
-import static ecdsa.application.constant.CommonConstant.SIGNATURE_EXTENSION;
-import static ecdsa.application.constant.CommonConstant.SIGNING;
-import static ecdsa.application.constant.CommonConstant.SUCCESS_DIALOG_TITLE;
-import static ecdsa.application.constant.CommonConstant.VERIFICATION;
-import static ecdsa.application.constant.CommonConstant.WARNING_EMPTY_FIELD_DIALOG_MESSAGE;
-import static ecdsa.application.constant.CommonConstant.WARNING_EMPTY_FIELD_DIALOG_TITLE;
-import static ecdsa.application.constant.CommonConstant.WARNING_EXTENSION_FILE_DIALOG_MESSAGE;
-import static ecdsa.application.constant.CommonConstant.WARNING_EXTENSION_FILE_DIALOG_TITLE;
-import static ecdsa.application.constant.CommonConstant.WARNING_KEY_NOT_VALID_DIALOG_MESSAGE;
-import static ecdsa.application.constant.CommonConstant.WARNING_KEY_NOT_VALID_DIALOG_TITLE;
-
 import ecdsa.application.cryptography.ECDSACryptographyAbstract;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
+
+import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,20 +19,10 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import static ecdsa.application.constant.CommonConstant.*;
 
 /**
  * @author kareltan
@@ -366,6 +324,41 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
 
     protected boolean isPDFExtensionFile(String filePath){
         return filePath.contains(PDF);
+    }
+
+    protected JPanel createAboutAndQnAPage(String titleLabelText, String contentText) {
+        JPanel aboutAndQnAPagePanel = new JPanel(new BorderLayout());
+
+        JLabel titleLabel = new JLabel(titleLabelText);
+        Font titleFont = new Font(DEFAULT_FONT, Font.BOLD, 24);
+        titleLabel.setFont(titleFont);
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+
+        aboutAndQnAPagePanel.add(titleLabel, BorderLayout.NORTH);
+
+        JPanel contentPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+
+        JTextPane descriptionTextPane = new JTextPane();
+        descriptionTextPane.setEditable(false);
+        descriptionTextPane.setContentType("text/html");
+
+        descriptionTextPane.setText(contentText);
+
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+
+        JScrollPane scrollPane = new JScrollPane(descriptionTextPane);
+
+        scrollPane.setPreferredSize(new Dimension(600, 400));
+
+        contentPanel.add(scrollPane, gbc);
+        aboutAndQnAPagePanel.add(contentPanel, BorderLayout.CENTER);
+
+        return aboutAndQnAPagePanel;
     }
 
 }

@@ -211,5 +211,43 @@ public class CommonConstant {
           "and verify signatures effortlessly, all within a few clicks. Our goal is to make the digital " +
           "signature process straightforward and accessible to users of all levels of technical expertise";
 
+  public static final String QNA_DESCRIPTION = "<b>Q1: What is a digital signature, and why is it important?</b> <br>" +
+          "A1: A digital signature is a cryptographic technique used to verify the authenticity and integrity " +
+          "of digital messages or documents. It provides a secure way " +
+          "to ensure that the sender is who they claim to be and that the content " +
+          "has not been tampered with. Digital signatures are crucial for " +
+          "secure online transactions and document exchanges, offering a higher level of trust and security " +
+          "than traditional signatures.<br><br>" +
+
+          "<b>Q2: Can I use the Digital Signature Application for my business, regardless of its size?</b> <br>" +
+          "A2: Absolutely! Our Digital Signature Application is designed to " +
+          "be flexible and scalable, making it suitable for businesses of all sizes. " +
+          "Whether you're a small startup or a large corporation, our solution can be customized to " +
+          "meet your specific needs. Enhance the security and efficiency of your document transactions " +
+          "with our user-friendly and adaptable application.<br><br>" +
+
+          "<b>Q3: How does the verification process work, and why is it important?</b> <br>" +
+          "A3: The verification process involves using the recipient's public key to" +
+          " decrypt the digital signature, revealing the hash value. The document is " +
+          "then hashed again, and the two hash values are compared. If they match, the signature is " +
+          "valid, confirming the document's integrity and authenticity. Verification is crucial for ensuring that " +
+          "the signed document has not been altered during transmission and that it originated " +
+          "from the claimed sender.<br><br>" +
+
+          "<b>Q4: How does the Elliptic Curve Algorithm enhance security in digital signatures?</b> <br>" +
+          "A4: The Elliptic Curve Algorithm is a modern and efficient cryptographic " +
+          "method used for digital signatures. It leverages the mathematical properties of " +
+          "elliptic curves to provide strong security with shorter key lengths, " +
+          "making it computationally more efficient. This ensures a high level of " +
+          "protection against unauthorized access and ensures the confidentiality and " +
+          "integrity of the signed documents.<br><br>" +
+
+          "<b>Q5: Why is a 256-bit hash function significant in the signing and verification process?</b> <br>" +
+          "A5: The 256-bit hash function plays a crucial role in the security of " +
+          "our Digital Signature Application. It produces a fixed-size hash value that serves " +
+          "as a unique digital fingerprint for each document. The use of a " +
+          "256-bit hash function ensures a high level of collision resistance, " +
+          "making it extremely difficult for two different documents to produce the same " +
+          "hash value. This adds an extra layer of security to the signing and verification process.<br><br>";
 
 }
