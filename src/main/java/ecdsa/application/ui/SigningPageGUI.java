@@ -31,6 +31,7 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Objects;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -101,27 +102,29 @@ public class SigningPageGUI extends CommonAbstract {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        signingButton.addActionListener(e -> {
-            // Validate fields
-            if (isEmpty(privateKeyTextField) || isEmpty(fileTextField)) {
-                showPopUpWarningValidation(frame);
-                return;
-            }
-
-            //validate the extension file
-            if(!validateExtensionFile(fileTextField.getText())){
-                showPopUpWarningDocumentValidationType(frame);
-                return;
-            }
-
-            // Show loading dialog or perform other actions
-            showLoadingDialog(frame, new MainPageGUI(), fileTextField.getText(), privateKeyTextField.getText());
-            frame.dispose();
-        });
+        signingButton.addActionListener(e -> signLogic(privateKeyTextField, fileTextField, frame));
 
         clearButton.addActionListener(e -> clearButtonPopUpConfirmation(frame, privateKeyTextField, null, fileTextField, null));
 
         return signingPagePanel;
+    }
+
+    private void signLogic(JTextField privateKeyTextField, JTextField fileTextField, JFrame frame) {
+        // Validate fields
+        if (isEmpty(privateKeyTextField) || isEmpty(fileTextField)) {
+            showPopUpWarningValidation(frame);
+            return;
+        }
+
+        //validate the extension file
+        if(!validateExtensionFile(fileTextField.getText())){
+            showPopUpWarningDocumentValidationType(frame);
+            return;
+        }
+
+        // Show loading dialog or perform other actions
+        showLoadingDialog(frame, new MainPageGUI(), fileTextField.getText(), privateKeyTextField.getText());
+        frame.dispose();
     }
 
     private void showLoadingDialog(JFrame frame, MainPageGUI dashboardPageGUI, String filePath,
@@ -147,19 +150,16 @@ public class SigningPageGUI extends CommonAbstract {
             String privateKeyContent = readFromFile(privateKeyPath);
 
             // Convert the encoded private key content to a PrivateKey object
-            PrivateKey privateKey;
-            try {
-                privateKey = getPrivateKeyFromString(privateKeyContent);
-            } catch (InvalidKeySpecException e) {
-                log.debug("Decoded private key from file is failed with path: {}", privateKeyPath);
+            PrivateKey privateKey = readPrivateKey(privateKeyPath, privateKeyContent);
+            if(Objects.isNull(privateKey)){
                 showPopUpWarningKeyNotValid(frame);
                 return;
             }
 
             // Read the data from the bytes of the file
-            byte[] fileBytes = readBytesFromFile(filePath);
-            String data = new String(fileBytes, StandardCharsets.UTF_8);
+            String data = new String(readBytesFromFile(filePath), StandardCharsets.UTF_8);
 
+            //init signature
             byte[] signature = signDocument.signData(data, privateKey);
 
             // Set up a timer to update the progress bar and close the loading dialog after 5 seconds
@@ -186,6 +186,15 @@ public class SigningPageGUI extends CommonAbstract {
                  NoSuchProviderException | SignatureException ex){
             log.error("Error during signing process with error: ", ex);
             showPopUpError(frame);
+        }
+    }
+
+    private PrivateKey readPrivateKey(String privateKeyPath, String privateKeyContent) {
+        try {
+            return getPrivateKeyFromString(privateKeyContent);
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException | NoSuchProviderException e) {
+            log.debug("Decoded private key from file is failed with path: {}", privateKeyPath);
+            return null;
         }
     }
 

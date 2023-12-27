@@ -5,7 +5,9 @@ import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
 import static ecdsa.application.constant.CommonConstant.DOCUMENTATION;
+import static ecdsa.application.constant.CommonConstant.LANDING_PAGE_DESCRIPTION;
 import static ecdsa.application.constant.CommonConstant.LANDING_PAGE_GUI;
+import static ecdsa.application.constant.CommonConstant.LANDING_PAGE_TITLE;
 import static ecdsa.application.constant.CommonConstant.START;
 
 import java.awt.Dimension;
@@ -57,10 +59,7 @@ public class LandingPageGUI extends CommonAbstract {
         mainPanelConstraints.insets = new Insets(10, 10, 10, 10);
 
         // Create the titleLabel and add it to the main panel
-        JLabel titleLabel = new JLabel("<html><div style='text-align: center;'>PENGEMBANGAN APLIKASI TANDA TANGAN DIGITAL<br> "
-            + "DENGAN PROSES SIGNING DAN VERIFICATION MENGGUNAKAN "
-            + "<br>ALGORITMA ELLIPTIC CURVE DIGITAL SIGNATURE YANG MENGGUNAKAN "
-            + "<br>FUNGSI HASH BERBASIS 256 BIT</div></html>");
+        JLabel titleLabel = new JLabel(LANDING_PAGE_TITLE);
         Font fontTitle = new Font(DEFAULT_FONT, Font.BOLD, 20);
         titleLabel.setFont(fontTitle);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -72,9 +71,7 @@ public class LandingPageGUI extends CommonAbstract {
         mainPanel.add(usagePanel, mainPanelConstraints);
 
         // Create a panel for the usage text
-        JPanel usageTextPanel = createTextPanelWithBorder("This application is designed for the secure development of digital signatures. "
-                + "<br>It facilitates the signing and verification process using the Elliptic Curve Digital Signature Algorithm "
-                + "<br>with a robust 256-bit hash function. Experience the efficiency and reliability of digital signature technology.");
+        JPanel usageTextPanel = createTextPanelWithBorder(LANDING_PAGE_DESCRIPTION);
         mainPanelConstraints.gridy++;
         mainPanel.add(usageTextPanel, mainPanelConstraints);
 
@@ -106,21 +103,12 @@ public class LandingPageGUI extends CommonAbstract {
         buttonPanel.add(aboutButton);
 
         // Adjust the width and height of the button
-        startButton.setPreferredSize(new Dimension(150, 40));
-        aboutButton.setPreferredSize(new Dimension(150, 40));
+        startButton.setPreferredSize(setNewDimensionForButton());
+        aboutButton.setPreferredSize(setNewDimensionForButton());
 
-        startButton.addActionListener(e -> {
-            // Code to execute when the "Start" button is clicked
-            MainPageGUI dashboardPageGUI = new MainPageGUI();
-            dashboardPageGUI.showGUI(0);
-            frame.dispose();
-        });
+        startButton.addActionListener(e -> moveToMainPage(0));
 
-        aboutButton.addActionListener(e -> {
-            MainPageGUI dashboardPageGUI = new MainPageGUI();
-            dashboardPageGUI.showGUI(3);
-            frame.dispose();
-        });
+        aboutButton.addActionListener(e -> moveToMainPage(3));
 
         // Center the main panel on the frame
         frame.add(mainPanel);
@@ -133,5 +121,15 @@ public class LandingPageGUI extends CommonAbstract {
 
         // Set the frame to be visible
         frame.setVisible(true);
+    }
+
+    private Dimension setNewDimensionForButton() {
+        return new Dimension(150, 40);
+    }
+
+    private void moveToMainPage(int index) {
+        MainPageGUI dashboardPageGUI = new MainPageGUI();
+        dashboardPageGUI.showGUI(index);
+        frame.dispose();
     }
 }

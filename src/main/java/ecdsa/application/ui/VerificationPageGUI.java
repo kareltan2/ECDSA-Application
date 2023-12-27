@@ -44,6 +44,7 @@ import java.security.SignatureException;
 import java.util.Base64;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -122,55 +123,7 @@ public class VerificationPageGUI extends CommonAbstract {
     frame.setLocationRelativeTo(null);
     frame.setVisible(true);
 
-    verificationButton.addActionListener(e -> {
-      try {
-        // Validate fields
-        if (isEmpty(publicKeyTextField) || isEmpty(signedFileTextField) || isEmpty(originalFileTextField)) {
-          showPopUpWarningValidation(frame);
-          return;
-        }
-
-        //validate the extension file
-        if(!validateExtensionFile(signedFileTextField.getText())){
-          showPopUpWarningDocumentValidationType(frame);
-          return;
-        }
-
-        // Read the content of the private key file
-        String publicKeyContent = readFromFile(publicKeyTextField.getText());
-
-        // Convert the encoded private key content to a PrivateKey object
-        PublicKey publicKey;
-        try {
-          publicKey = getPublicKeyFromString(publicKeyContent);
-        } catch (Exception keyEx){
-          log.debug("Decoded public key from file is failed with path: {}", publicKeyTextField.getText());
-          showPopUpWarningKeyNotValid(frame);
-          return;
-        }
-
-        // Read the data from the bytes of the file
-        byte[] fileBytes = readBytesFromFile(originalFileTextField.getText());
-        String data = new String(fileBytes, StandardCharsets.UTF_8);
-
-        byte[] signatureExtracted = extractSignatureFromQRCodeSignature(signedFileTextField.getText());
-        if(signatureExtracted.length != 0){
-          boolean isValid = verifyDocument.verifySignature(data, signatureExtracted, publicKey);
-
-          if(isValid){
-            JOptionPane.showMessageDialog(frame, VERIFICATION_DIALOG_MESSAGE_VALID, VERIFICATION_DIALOG_TITLE, JOptionPane.INFORMATION_MESSAGE);
-          } else {
-            JOptionPane.showMessageDialog(frame, VERIFICATION_DIALOG_MESSAGE_NOT_VALID, VERIFICATION_DIALOG_TITLE, JOptionPane.ERROR_MESSAGE);
-          }
-        } else {
-          showPopUpWarningSignatureNotValid(frame);
-        }
-
-      } catch (IOException | NoSuchAlgorithmException | SignatureException | NoSuchProviderException | InvalidKeyException ex) {
-        log.error("Error during verification process with error: ", ex);
-        showPopUpError(frame);
-      }
-    });
+    verificationButton.addActionListener(e -> verificationLogic(frame, publicKeyTextField, signedFileTextField, originalFileTextField));
 
     clearButton.addActionListener(e ->
         clearButtonPopUpConfirmation(frame, null, publicKeyTextField,
@@ -178,6 +131,70 @@ public class VerificationPageGUI extends CommonAbstract {
     );
 
     return verificationPagePanel;
+  }
+
+  private void verificationLogic(JFrame frame, JTextField publicKeyTextField, JTextField signedFileTextField, JTextField originalFileTextField) {
+    try {
+      // Validate fields
+      if (isEmpty(publicKeyTextField) || isEmpty(signedFileTextField) || isEmpty(originalFileTextField)) {
+        showPopUpWarningValidation(frame);
+        return;
+      }
+
+      //validate the extension file
+      if(!validateExtensionFile(signedFileTextField.getText())){
+        showPopUpWarningDocumentValidationType(frame);
+        return;
+      }
+
+      // Read the content of the private key file
+      String publicKeyContent = readFromFile(publicKeyTextField.getText());
+
+      // Convert the encoded private key content to a PrivateKey object
+      PublicKey publicKey = readPublicKey(publicKeyContent, publicKeyTextField);
+      if(Objects.isNull(publicKey)){
+        showPopUpWarningKeyNotValid(frame);
+        return;
+      }
+
+      // Read the data from the bytes of the file
+      String data = new String(readBytesFromFile(originalFileTextField.getText()), StandardCharsets.UTF_8);
+
+      byte[] signatureExtracted = extractSignatureFromQRCodeSignature(signedFileTextField.getText());
+      processVerificationOutput(frame, signatureExtracted, data, publicKey);
+
+    } catch (IOException | NoSuchAlgorithmException | SignatureException | NoSuchProviderException | InvalidKeyException ex) {
+      log.error("Error during verification process with error: ", ex);
+      showPopUpError(frame);
+    }
+  }
+
+  private void processVerificationOutput(JFrame frame, byte[] signatureExtracted, String data, PublicKey publicKey)
+      throws NoSuchAlgorithmException, SignatureException, NoSuchProviderException, InvalidKeyException {
+    if(signatureExtracted.length != 0){
+      boolean isValid = verifyDocument.verifySignature(data, signatureExtracted, publicKey);
+
+      showResultInMessageDialog(frame, isValid);
+    } else {
+      showPopUpWarningSignatureNotValid(frame);
+    }
+  }
+
+  private void showResultInMessageDialog(JFrame frame, boolean isValid) {
+    if(isValid){
+      JOptionPane.showMessageDialog(frame, VERIFICATION_DIALOG_MESSAGE_VALID, VERIFICATION_DIALOG_TITLE, JOptionPane.INFORMATION_MESSAGE);
+    } else {
+      JOptionPane.showMessageDialog(frame, VERIFICATION_DIALOG_MESSAGE_NOT_VALID, VERIFICATION_DIALOG_TITLE, JOptionPane.ERROR_MESSAGE);
+    }
+  }
+
+  private PublicKey readPublicKey(String publicKeyContent, JTextField publicKeyTextField) {
+    try {
+      return getPublicKeyFromString(publicKeyContent);
+    } catch (Exception keyEx){
+      log.debug("Decoded public key from file is failed with path: {}", publicKeyTextField.getText());
+      return null;
+    }
   }
 
   private byte[] extractSignatureFromQRCodeSignature(String pdfFilePath) {
@@ -196,10 +213,9 @@ public class VerificationPageGUI extends CommonAbstract {
           Map<DecodeHintType, Object> hints = new EnumMap<>(DecodeHintType.class);
           hints.put(DecodeHintType.PURE_BARCODE, Boolean.FALSE);
 
+          document.close();
           // Use ZXing library to decode the QR code
           Result result = qrCodeReader.decode(binaryBitmap, hints);
-
-          document.close();
 
           // Extract the QR code bytes directly from the Result
           return Base64.getDecoder().decode(result.getText());

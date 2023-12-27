@@ -121,11 +121,11 @@ public abstract class CommonAbstract extends ECDSACryptographyAbstract {
         jTextField.setPreferredSize(new Dimension(550, 40));
         jTextField.setMaximumSize(new Dimension(550, 40));
 
-        panel.add(Box.createHorizontalGlue());
+        addRigidAreaForHorizontalSpacing(panel);
         panel.add(label);
-        panel.add(Box.createRigidArea(new Dimension(10, 0)));
+        addRigidAreaForSpacing(panel, 10, 0);
         panel.add(jTextField);
-        panel.add(Box.createHorizontalGlue());
+        addRigidAreaForHorizontalSpacing(panel);
 
         return panel;
     }
