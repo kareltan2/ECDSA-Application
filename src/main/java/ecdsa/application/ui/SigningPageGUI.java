@@ -102,20 +102,21 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
         frame.setVisible(true);
 
         signingButton.addActionListener(e -> {
-                // Validate fields
-                if (isEmpty(privateKeyTextField) || isEmpty(fileTextField)) {
-                    showPopUpWarningValidation(frame);
-                    return;
-                }
+            // Validate fields
+            if (isEmpty(privateKeyTextField) || isEmpty(fileTextField)) {
+                showPopUpWarningValidation(frame);
+                return;
+            }
 
-                //validate the extension file
-                if(!validateExtensionFile(fileTextField.getText())){
-                    showPopUpWarningDocumentValidationType(frame);
-                    return;
-                }
+            //validate the extension file
+            if(!validateExtensionFile(fileTextField.getText())){
+                showPopUpWarningDocumentValidationType(frame);
+                return;
+            }
 
-                // Show loading dialog or perform other actions
-                showLoadingDialog(frame, new MainPageGUI(), fileTextField.getText(), privateKeyTextField.getText());
+            // Show loading dialog or perform other actions
+            showLoadingDialog(frame, new MainPageGUI(), fileTextField.getText(), privateKeyTextField.getText());
+            frame.dispose();
         });
 
         clearButton.addActionListener(e -> clearButtonPopUpConfirmation(frame, privateKeyTextField, null, fileTextField, null));

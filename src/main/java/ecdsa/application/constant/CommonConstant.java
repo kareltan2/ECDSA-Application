@@ -18,6 +18,8 @@ public class CommonConstant {
 
   public static final String CURVE = "secp256r1";
 
+  public static final String DEFAULT_TITLE_TAB_PAGE = "ECDSA Application";
+
   public static final String EC = "EC";
 
   public static final String BC = "BC";
