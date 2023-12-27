@@ -164,5 +164,52 @@ public class CommonConstant {
 
   public static final String SIGNATURE_EXTENSION = "sig";
 
+  public static final String ABOUT_DESCRIPTION = "Welcome to Digital Signature Application, " +
+          "the forefront of cutting-edge technology in the realm of digital signatures. " +
+          "By this application, we take pride in revolutionizing secure document transactions through our state-of-the-art " +
+          "Digital Signature Application. Our commitment to excellence is evident in our implementation of the Elliptic Curve Algorithm, " +
+          "utilizing a robust 256-bit hash function for unparalleled security and efficiency.<br><br>" +
+          "<b>Who We Are:</b> <br>" +
+          "we are driven by a passion for innovation and a dedication to providing seamless " +
+          "solutions for secure digital interactions. Our team comprises experts in cryptography, " +
+          "software development, and information security, united by a common goal: " +
+          "to empower individuals and organizations with a reliable and secure digital signature platform.<br><br>" +
+          "<b>The Signing and Verification Process</b> <br>" +
+          "1. Key Generation <br>" +
+          "Our Digital Signature Application initiates the process by generating a unique pair " +
+          "of cryptographic keys—public and private—based on the Elliptic Curve Algorithm. " +
+          "This ensures a secure foundation for the entire signing and verification journey.<br><br>" +
+          "2. Hashing the Document <br>" +
+          "Before signing, the document undergoes a rigorous hashing process using a 256-bit hash function. " +
+          "This produces a fixed-size hash value, a digital fingerprint of the document that is unique " +
+          "and irreversible.<br><br>" +
+          "3. Signing the Document <br>" +
+          "The private key is then used to create the digital signature, which is mathematically " +
+          "linked to the hashed document. This signature serves as a tamper-evident seal, " +
+          "providing assurance that the document has not been altered since it was signed.<br><br>" +
+          "4. Verification Process <br>" +
+          "To verify a signature, the recipient uses the public key to decrypt the digital signature, " +
+          "revealing the hash value. The document is then hashed again, and the two hash values are compared. " +
+          "If they match, the signature is valid, confirming the document's integrity and authenticity.<br><br>" +
+          "<b>The Digital Signature Advantage</b> <br>" +
+          "1. Unrivaled Security <br>" +
+          "Security lies at the core of our Digital Signature Application." +
+          " We leverage the Elliptic Curve Algorithm, a cutting-edge cryptographic technique, " +
+          "to ensure the highest level of protection for your digital signatures. " +
+          "With a 256-bit hash function forming the backbone of our algorithm, " +
+          "we provide an impregnable fortress against unauthorized access and data breaches.<br><br>" +
+          "2. Seamless Integration <br>" +
+          "Our Digital Signature Application seamlessly integrates into your existing " +
+          "workflows and processes. Whether you are a small business, " +
+          "a government entity, or a large corporation, our flexible " +
+          "and scalable solution adapts to your unique needs. Enhance the " +
+          "efficiency of your document signing and verification processes with " +
+          "our user-friendly application.<br><br>" +
+          "3. User-Friendly Interface <br>" +
+          "We understand the importance of user experience. That's why we've designed " +
+          "our application with an intuitive and user-friendly interface. Sign documents with ease, " +
+          "and verify signatures effortlessly, all within a few clicks. Our goal is to make the digital " +
+          "signature process straightforward and accessible to users of all levels of technical expertise";
+
 
 }
