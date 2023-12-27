@@ -1,11 +1,14 @@
 package ecdsa.application.ui;
 
-import javax.swing.*;
-
 import static ecdsa.application.constant.CommonConstant.QNA_DESCRIPTION;
+import static ecdsa.application.constant.CommonConstant.QNA_TITLE_LABEL;
 
-public class QnAPageGUI extends NavigatorGUIAbstract{
+import javax.swing.JPanel;
+
+public class QnAPageGUI extends CommonAbstract {
+
     public JPanel createQnAPage() {
-        return createAboutAndQnAPage("Frequently Asked Questions (FAQs)", QNA_DESCRIPTION);
+        return createAboutAndQnAPage(QNA_TITLE_LABEL, QNA_DESCRIPTION);
     }
+
 }

@@ -10,12 +10,21 @@ import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
 import static ecdsa.application.constant.CommonConstant.ORIGINAL_FILE;
 import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY;
-import static ecdsa.application.constant.CommonConstant.SIGNATURE;
+import static ecdsa.application.constant.CommonConstant.SIGNED_FILE_NAME_LABEL;
 import static ecdsa.application.constant.CommonConstant.VERIFICATION_DIALOG_MESSAGE_NOT_VALID;
 import static ecdsa.application.constant.CommonConstant.VERIFICATION_DIALOG_MESSAGE_VALID;
 import static ecdsa.application.constant.CommonConstant.VERIFICATION_DIALOG_TITLE;
 import static ecdsa.application.constant.CommonConstant.VERIFICATION_PAGE;
 
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.FormatException;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.Result;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
 import ecdsa.application.cryptography.VerifyDocument;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -23,9 +32,18 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagLayout;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PublicKey;
+import java.security.SignatureException;
 import java.util.Base64;
+import java.util.EnumMap;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -37,12 +55,18 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.graphics.PDXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 /**
  * @author kareltan
  */
 @Slf4j
-public class VerificationPageGUI extends NavigatorGUIAbstract {
+public class VerificationPageGUI extends CommonAbstract {
 
   private final VerifyDocument verifyDocument = new VerifyDocument();
 
@@ -63,12 +87,12 @@ public class VerificationPageGUI extends NavigatorGUIAbstract {
     verificationPagePanel.add(createLabelAndFileInputForSavePath(publicKeyTextField, PUBLIC_KEY, frame, PUBLIC_KEY));
     addRigidAreaForSpacing(verificationPagePanel, 0, 10);
 
-    JTextField fileTextField = new JTextField();
-    verificationPagePanel.add(createLabelAndFileInputForSavePath(fileTextField, ORIGINAL_FILE, frame, DOCUMENTS));
+    JTextField signedFileTextField = new JTextField();
+    verificationPagePanel.add(createLabelAndFileInputForSavePath(signedFileTextField, SIGNED_FILE_NAME_LABEL, frame, DOCUMENTS));
     addRigidAreaForSpacing(verificationPagePanel, 0, 10);
 
-    JTextField signatureTextField = new JTextField();
-    verificationPagePanel.add(createLabelAndFileInputForSavePath(signatureTextField, SIGNATURE, frame, SIGNATURE));
+    JTextField originalFileTextField = new JTextField();
+    verificationPagePanel.add(createLabelAndFileInputForSavePath(originalFileTextField, ORIGINAL_FILE, frame, DOCUMENTS));
     addRigidAreaForSpacing(verificationPagePanel, 0, 10);
 
     verificationPagePanel.add(createLabelAndScrollPane(MESSAGE_NOTES_LABEL, MESSAGE_CONTENT));
@@ -101,13 +125,13 @@ public class VerificationPageGUI extends NavigatorGUIAbstract {
     verificationButton.addActionListener(e -> {
       try {
         // Validate fields
-        if (isEmpty(publicKeyTextField) || isEmpty(fileTextField) || isEmpty(signatureTextField)) {
+        if (isEmpty(publicKeyTextField) || isEmpty(signedFileTextField) || isEmpty(originalFileTextField)) {
           showPopUpWarningValidation(frame);
           return;
         }
 
         //validate the extension file
-        if(!validateExtensionFile(fileTextField.getText())){
+        if(!validateExtensionFile(signedFileTextField.getText())){
           showPopUpWarningDocumentValidationType(frame);
           return;
         }
@@ -126,28 +150,66 @@ public class VerificationPageGUI extends NavigatorGUIAbstract {
         }
 
         // Read the data from the bytes of the file
-        byte[] fileBytes = readBytesFromFile(fileTextField.getText());
+        byte[] fileBytes = readBytesFromFile(originalFileTextField.getText());
         String data = new String(fileBytes, StandardCharsets.UTF_8);
 
-        byte[] signatureExtracted = Base64.getDecoder().decode(readBytesFromFile(signatureTextField.getText()));
+        byte[] signatureExtracted = extractSignatureFromQRCodeSignature(signedFileTextField.getText());
+        if(signatureExtracted.length != 0){
+          boolean isValid = verifyDocument.verifySignature(data, signatureExtracted, publicKey);
 
-        boolean isValid = verifyDocument.verifySignature(data, signatureExtracted, publicKey);
-
-        if(isValid){
-          JOptionPane.showMessageDialog(frame, VERIFICATION_DIALOG_MESSAGE_VALID, VERIFICATION_DIALOG_TITLE, JOptionPane.INFORMATION_MESSAGE);
+          if(isValid){
+            JOptionPane.showMessageDialog(frame, VERIFICATION_DIALOG_MESSAGE_VALID, VERIFICATION_DIALOG_TITLE, JOptionPane.INFORMATION_MESSAGE);
+          } else {
+            JOptionPane.showMessageDialog(frame, VERIFICATION_DIALOG_MESSAGE_NOT_VALID, VERIFICATION_DIALOG_TITLE, JOptionPane.ERROR_MESSAGE);
+          }
         } else {
-          JOptionPane.showMessageDialog(frame, VERIFICATION_DIALOG_MESSAGE_NOT_VALID, VERIFICATION_DIALOG_TITLE, JOptionPane.ERROR_MESSAGE);
+          showPopUpWarningSignatureNotValid(frame);
         }
 
-      } catch (Exception ex) {
-        log.error("Error during signing process with error: ", ex);
+      } catch (IOException | NoSuchAlgorithmException | SignatureException | NoSuchProviderException | InvalidKeyException ex) {
+        log.error("Error during verification process with error: ", ex);
         showPopUpError(frame);
       }
     });
 
-    clearButton.addActionListener(e -> clearButtonPopUpConfirmation(frame, null, publicKeyTextField, fileTextField, signatureTextField));
+    clearButton.addActionListener(e ->
+        clearButtonPopUpConfirmation(frame, null, publicKeyTextField,
+            originalFileTextField, signedFileTextField)
+    );
 
     return verificationPagePanel;
+  }
+
+  private byte[] extractSignatureFromQRCodeSignature(String pdfFilePath) {
+    try {
+      PDDocument document = PDDocument.load(new File(pdfFilePath));
+      PDPage page = document.getPage(document.getNumberOfPages() - 1);
+      PDResources resources = page.getResources();
+      for (COSName cosName : resources.getXObjectNames()) {
+        PDXObject pdxObject = resources.getXObject(cosName);
+        if (pdxObject instanceof PDImageXObject) {
+          PDImageXObject imageXObject = (PDImageXObject) pdxObject;
+          BufferedImage image = imageXObject.getImage();
+
+          QRCodeReader qrCodeReader = new QRCodeReader();
+          BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(image)));
+          Map<DecodeHintType, Object> hints = new EnumMap<>(DecodeHintType.class);
+          hints.put(DecodeHintType.PURE_BARCODE, Boolean.FALSE);
+
+          // Use ZXing library to decode the QR code
+          Result result = qrCodeReader.decode(binaryBitmap, hints);
+
+          document.close();
+
+          // Extract the QR code bytes directly from the Result
+          return Base64.getDecoder().decode(result.getText());
+        }
+      }
+      document.close();
+    } catch (IOException | ChecksumException | FormatException | NotFoundException ex) {
+      log.error("There is error occurred when extract signature, error: ", ex);
+    }
+    return new byte[0];
   }
 
 }

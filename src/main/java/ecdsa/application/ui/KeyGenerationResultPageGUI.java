@@ -39,7 +39,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author kareltan
  */
 @Slf4j
-public class KeyGenerationResultPageGUI extends NavigatorGUIAbstract {
+public class KeyGenerationResultPageGUI extends CommonAbstract {
 
     private final JFrame frame;
 
