@@ -90,7 +90,8 @@ public class MainPageGUI {
     }
 
     private JPanel createQnaPanel() {
-        return new JPanel();
+        QnAPageGUI qnAPageGUI = new QnAPageGUI();
+        return qnAPageGUI.createQnAPage();
     }
 
     private void updateFrameTitle(int selectedIndex) {
