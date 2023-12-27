@@ -4,12 +4,13 @@ import static ecdsa.application.constant.CommonConstant.CLEAR_INPUT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
-import static ecdsa.application.constant.CommonConstant.FILE_NAME;
-import static ecdsa.application.constant.CommonConstant.LABEL_PRIVATE_KEY;
+import static ecdsa.application.constant.CommonConstant.DOCUMENTS;
 import static ecdsa.application.constant.CommonConstant.LOADING;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
+import static ecdsa.application.constant.CommonConstant.ORIGINAL_FILE;
 import static ecdsa.application.constant.CommonConstant.PLEASE_WAIT;
+import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY;
 import static ecdsa.application.constant.CommonConstant.SIGNING;
 import static ecdsa.application.constant.CommonConstant.SIGNING_PAGE;
 
@@ -22,8 +23,14 @@ import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -60,11 +67,11 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
         addRigidAreaForSpacing(signingPagePanel, 0, 10);
 
         JTextField privateKeyTextField = new JTextField();
-        signingPagePanel.add(createLabelAndFileInputForSavePath(privateKeyTextField, LABEL_PRIVATE_KEY, frame, false, false));
+        signingPagePanel.add(createLabelAndFileInputForSavePath(privateKeyTextField, PRIVATE_KEY, frame, PRIVATE_KEY));
         addRigidAreaForSpacing(signingPagePanel, 0, 10);
 
         JTextField fileTextField = new JTextField();
-        signingPagePanel.add(createLabelAndFileInputForSavePath(fileTextField, FILE_NAME, frame, false, true));
+        signingPagePanel.add(createLabelAndFileInputForSavePath(fileTextField, ORIGINAL_FILE, frame, DOCUMENTS));
         addRigidAreaForSpacing(signingPagePanel, 0, 10);
 
         signingPagePanel.add(createLabelAndScrollPane(MESSAGE_NOTES_LABEL, MESSAGE_CONTENT));
@@ -95,7 +102,6 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
         frame.setVisible(true);
 
         signingButton.addActionListener(e -> {
-            try {
                 // Validate fields
                 if (isEmpty(privateKeyTextField) || isEmpty(fileTextField)) {
                     showPopUpWarningValidation(frame);
@@ -108,31 +114,8 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
                     return;
                 }
 
-                // Read the content of the private key file
-                String privateKeyContent = readFromFile(privateKeyTextField.getText());
-
-                // Convert the encoded private key content to a PrivateKey object
-                PrivateKey privateKey;
-                try {
-                    privateKey = getPrivateKeyFromString(privateKeyContent);
-                } catch (Exception keyEx){
-                    log.debug("Decoded private key from file is failed with path: {}", privateKeyTextField.getText());
-                    showPopUpWarningKeyNotValid(frame);
-                    return;
-                }
-
-                // Read the data from the bytes of the file
-                byte[] fileBytes = readBytesFromFile(fileTextField.getText());
-                String data = new String(fileBytes, StandardCharsets.UTF_8);
-
-                byte[] signature = signDocument.signData(data, privateKey);
-
                 // Show loading dialog or perform other actions
-                showLoadingDialog(frame, new MainPageGUI(), fileTextField.getText(), signature);
-            } catch (Exception ex) {
-                log.error("Error during signing process with error: ", ex);
-                showPopUpError(frame);
-            }
+                showLoadingDialog(frame, new MainPageGUI(), fileTextField.getText(), privateKeyTextField.getText());
         });
 
         clearButton.addActionListener(e -> clearButtonPopUpConfirmation(frame, privateKeyTextField, null, fileTextField, null));
@@ -141,7 +124,7 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
     }
 
     private void showLoadingDialog(JFrame frame, MainPageGUI dashboardPageGUI, String filePath,
-        byte[] signature) {
+        String privateKeyPath) {
         JDialog loadingDialog = new JDialog(frame, LOADING, true);
         loadingDialog.setLayout(new BorderLayout());
 
@@ -158,26 +141,51 @@ public class SigningPageGUI extends NavigatorGUIAbstract {
         loadingDialog.setLocationRelativeTo(frame);
         loadingDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        // Set up a timer to update the progress bar and close the loading dialog after 5 seconds
-        Timer timer = new Timer(30, new ActionListener() {
-            private int progress = 0;
+        try {
+            // Read the content of the private key file
+            String privateKeyContent = readFromFile(privateKeyPath);
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (progress <= 100) {
-                    progressBar.setValue(progress);
-                    progress++;
-                } else {
-                    loadingDialog.dispose();
-                    dashboardPageGUI.closingFrame();
-                    redirectToSignResultPage(filePath, signature);
-                    ((Timer) e.getSource()).stop(); // Stop the timer after reaching 100%
-                }
+            // Convert the encoded private key content to a PrivateKey object
+            PrivateKey privateKey;
+            try {
+                privateKey = getPrivateKeyFromString(privateKeyContent);
+            } catch (InvalidKeySpecException e) {
+                log.debug("Decoded private key from file is failed with path: {}", privateKeyPath);
+                showPopUpWarningKeyNotValid(frame);
+                return;
             }
-        });
 
-        timer.start();
-        loadingDialog.setVisible(true);
+            // Read the data from the bytes of the file
+            byte[] fileBytes = readBytesFromFile(filePath);
+            String data = new String(fileBytes, StandardCharsets.UTF_8);
+
+            byte[] signature = signDocument.signData(data, privateKey);
+
+            // Set up a timer to update the progress bar and close the loading dialog after 5 seconds
+            Timer timer = new Timer(30, new ActionListener() {
+                private int progress = 0;
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (progress <= 100) {
+                        progressBar.setValue(progress);
+                        progress++;
+                    } else {
+                        loadingDialog.dispose();
+                        dashboardPageGUI.closingFrame();
+                        redirectToSignResultPage(filePath, signature);
+                        ((Timer) e.getSource()).stop(); // Stop the timer after reaching 100%
+                    }
+                }
+            });
+
+            timer.start();
+            loadingDialog.setVisible(true);
+        } catch (IOException | InvalidKeyException | NoSuchAlgorithmException |
+                 NoSuchProviderException | SignatureException ex){
+            log.error("Error during signing process with error: ", ex);
+            showPopUpError(frame);
+        }
     }
 
     private void redirectToSignResultPage(String filePath, byte[] signature) {

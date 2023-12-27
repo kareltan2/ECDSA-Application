@@ -6,13 +6,16 @@ import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
 import static ecdsa.application.constant.CommonConstant.FILE_CHOSEN_LABEL;
-import static ecdsa.application.constant.CommonConstant.FOLDER_LABEL;
+import static ecdsa.application.constant.CommonConstant.FOLDER;
+import static ecdsa.application.constant.CommonConstant.FULLSTOPS;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_BACK;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
 import static ecdsa.application.constant.CommonConstant.SAVE_TO_FILE;
+import static ecdsa.application.constant.CommonConstant.SIGNATURE_EXTENSION;
 import static ecdsa.application.constant.CommonConstant.SIGNED_FILE;
 import static ecdsa.application.constant.CommonConstant.SIGNING_RESULT_PAGE;
+import static ecdsa.application.constant.CommonConstant.SLASH;
 import static ecdsa.application.constant.CommonConstant.VERIFICATION;
 
 import java.awt.BorderLayout;
@@ -77,7 +80,7 @@ public class SigningResultPageGUI extends NavigatorGUIAbstract{
         addRigidAreaForSpacing(mainPanel, 0, 10);
 
         JTextField folderNameTextField = new JTextField();
-        mainPanel.add(createLabelAndFileInputForSavePath(folderNameTextField, FOLDER_LABEL, frame, true, false));
+        mainPanel.add(createLabelAndFileInputForSavePath(folderNameTextField, FOLDER, frame, FOLDER));
         addRigidAreaForSpacing(mainPanel, 0, 10);
 
         // Add components for Message Notes
@@ -123,7 +126,7 @@ public class SigningResultPageGUI extends NavigatorGUIAbstract{
 
                 //save signature to file
                 if(validateExtensionFile(chosenFileTextField.getText())){
-                    saveKeyToFile(signature, folderNameTextField.getText() + "/" + signedFileTextField.getText());
+                    saveKeyToFile(signature, folderNameTextField.getText() + SLASH + signedFileTextField.getText() + FULLSTOPS + SIGNATURE_EXTENSION);
                 } else {
                     showPopUpWarningDocumentValidationType(frame);
                     return;

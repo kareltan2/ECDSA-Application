@@ -5,11 +5,14 @@ import static ecdsa.application.constant.CommonConstant.CLEAR_INPUT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
-import static ecdsa.application.constant.CommonConstant.FILE_NAME;
-import static ecdsa.application.constant.CommonConstant.LABEL_PUBLIC_KEY;
+import static ecdsa.application.constant.CommonConstant.DOCUMENTS;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
+import static ecdsa.application.constant.CommonConstant.ORIGINAL_FILE;
+import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY;
 import static ecdsa.application.constant.CommonConstant.SIGNATURE;
+import static ecdsa.application.constant.CommonConstant.VERIFICATION_DIALOG_MESSAGE_NOT_VALID;
+import static ecdsa.application.constant.CommonConstant.VERIFICATION_DIALOG_MESSAGE_VALID;
 import static ecdsa.application.constant.CommonConstant.VERIFICATION_DIALOG_TITLE;
 import static ecdsa.application.constant.CommonConstant.VERIFICATION_PAGE;
 
@@ -57,15 +60,15 @@ public class VerificationPageGUI extends NavigatorGUIAbstract {
     addRigidAreaForSpacing(verificationPagePanel, 0, 10);
 
     JTextField publicKeyTextField = new JTextField();
-    verificationPagePanel.add(createLabelAndFileInputForSavePath(publicKeyTextField, LABEL_PUBLIC_KEY, frame, false, false));
+    verificationPagePanel.add(createLabelAndFileInputForSavePath(publicKeyTextField, PUBLIC_KEY, frame, PUBLIC_KEY));
     addRigidAreaForSpacing(verificationPagePanel, 0, 10);
 
     JTextField fileTextField = new JTextField();
-    verificationPagePanel.add(createLabelAndFileInputForSavePath(fileTextField, FILE_NAME, frame, false, true));
+    verificationPagePanel.add(createLabelAndFileInputForSavePath(fileTextField, ORIGINAL_FILE, frame, DOCUMENTS));
     addRigidAreaForSpacing(verificationPagePanel, 0, 10);
 
     JTextField signatureTextField = new JTextField();
-    verificationPagePanel.add(createLabelAndFileInputForSavePath(signatureTextField, SIGNATURE, frame, false, false));
+    verificationPagePanel.add(createLabelAndFileInputForSavePath(signatureTextField, SIGNATURE, frame, SIGNATURE));
     addRigidAreaForSpacing(verificationPagePanel, 0, 10);
 
     verificationPagePanel.add(createLabelAndScrollPane(MESSAGE_NOTES_LABEL, MESSAGE_CONTENT));
@@ -131,9 +134,9 @@ public class VerificationPageGUI extends NavigatorGUIAbstract {
         boolean isValid = verifyDocument.verifySignature(data, signatureExtracted, publicKey);
 
         if(isValid){
-          JOptionPane.showMessageDialog(frame, "Result Verification: " + isValid, VERIFICATION_DIALOG_TITLE, JOptionPane.INFORMATION_MESSAGE);
+          JOptionPane.showMessageDialog(frame, VERIFICATION_DIALOG_MESSAGE_VALID, VERIFICATION_DIALOG_TITLE, JOptionPane.INFORMATION_MESSAGE);
         } else {
-          JOptionPane.showMessageDialog(frame, "Result Verification: " + isValid, VERIFICATION_DIALOG_TITLE, JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(frame, VERIFICATION_DIALOG_MESSAGE_NOT_VALID, VERIFICATION_DIALOG_TITLE, JOptionPane.ERROR_MESSAGE);
         }
 
       } catch (Exception ex) {
