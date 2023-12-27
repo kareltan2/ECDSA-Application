@@ -168,6 +168,15 @@ public class CommonConstant {
 
   public static final String SIGNATURE_EXTENSION = "sig";
 
+  public static final String LANDING_PAGE_TITLE = "<html><div style='text-align: center;'>PENGEMBANGAN APLIKASI TANDA TANGAN DIGITAL<br> "
+      + "DENGAN PROSES SIGNING DAN VERIFICATION MENGGUNAKAN "
+      + "<br>ALGORITMA ELLIPTIC CURVE DIGITAL SIGNATURE YANG MENGGUNAKAN "
+      + "<br>FUNGSI HASH BERBASIS 256 BIT</div></html>";
+
+  public static final String LANDING_PAGE_DESCRIPTION = "This application is designed for the secure development of digital signatures. "
+      + "<br>It facilitates the signing and verification process using the Elliptic Curve Digital Signature Algorithm "
+      + "<br>with a robust 256-bit hash function. Experience the efficiency and reliability of digital signature technology.";
+
   public static final String ABOUT_DESCRIPTION = "Welcome to Digital Signature Application, " +
           "the forefront of cutting-edge technology in the realm of digital signatures. " +
           "By this application, we take pride in revolutionizing secure document transactions through our state-of-the-art " +

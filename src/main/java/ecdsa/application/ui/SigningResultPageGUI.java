@@ -135,29 +135,7 @@ public class SigningResultPageGUI extends CommonAbstract {
         frame.setVisible(true);
 
         // Add action listeners for the buttons
-        saveButton.addActionListener(e -> {
-            try {
-                // Validate if the signedFileTextField is empty
-                if (isEmpty(signedFileTextField) || isEmpty(chosenFileTextField)) {
-                    showPopUpWarningValidation(frame);
-                    return;
-                }
-
-                //save signature to file
-                if(validateExtensionFile(chosenFileTextField.getText())){
-                    saveConcatenatedSignatureToFile(folderNameTextField.getText() + SLASH + signedFileTextField.getText() + FULLSTOPS + PDF);
-                } else {
-                    showPopUpWarningDocumentValidationType(frame);
-                    return;
-                }
-
-                // Show success message or perform other actions
-                successActionWithPopUp(frame, VERIFICATION);
-            } catch (Exception ex) {
-                log.error("Error while saving signature with error: ", ex);
-                showPopUpError(frame);
-            }
-        });
+        saveButton.addActionListener(e -> saveLogic(signedFileTextField, chosenFileTextField, folderNameTextField));
 
         backButton.addActionListener(e -> {
             int result = JOptionPane.showConfirmDialog(frame,
@@ -170,6 +148,35 @@ public class SigningResultPageGUI extends CommonAbstract {
                 frame.dispose();
             }
         });
+    }
+
+    private void saveLogic(JTextField signedFileTextField, JTextField chosenFileTextField,
+        JTextField folderNameTextField) {
+        try {
+            // Validate if the signedFileTextField is empty
+            if (isEmpty(signedFileTextField) || isEmpty(chosenFileTextField)) {
+                showPopUpWarningValidation(frame);
+                return;
+            }
+
+            //save signature to file
+            if(validateExtensionFile(chosenFileTextField.getText())){
+                saveConcatenatedSignatureToFile(generateFileSignedPath(folderNameTextField, signedFileTextField));
+            } else {
+                showPopUpWarningDocumentValidationType(frame);
+                return;
+            }
+
+            // Show success message or perform other actions
+            successActionWithPopUp(frame, VERIFICATION);
+        } catch (Exception ex) {
+            log.error("Error while saving signature with error: ", ex);
+            showPopUpError(frame);
+        }
+    }
+
+    private String generateFileSignedPath(JTextField folderNameTextField, JTextField signedFileTextField) {
+        return folderNameTextField.getText() + SLASH + signedFileTextField.getText() + FULLSTOPS + PDF;
     }
 
     private void saveConcatenatedSignatureToFile(String targetedSavedFile) throws IOException {

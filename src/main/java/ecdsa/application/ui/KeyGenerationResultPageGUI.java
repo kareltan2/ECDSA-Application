@@ -11,7 +11,9 @@ import static ecdsa.application.constant.CommonConstant.LABEL_PRIVATE_KEY;
 import static ecdsa.application.constant.CommonConstant.LABEL_PUBLIC_KEY;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
+import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY;
 import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY_EXTENSION;
+import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY;
 import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY_EXTENSION;
 import static ecdsa.application.constant.CommonConstant.SAVE_TO_FILE;
 import static ecdsa.application.constant.CommonConstant.SIGNING;
@@ -123,29 +125,39 @@ public class KeyGenerationResultPageGUI extends CommonAbstract {
         frame.setVisible(true);
 
         // Add action listeners for the buttons
-        saveButton.addActionListener(e -> {
-            try {
-                // Validate fields
-                if (isEmpty(privateKeyTextField) || isEmpty(publicKeyTextField) || isEmpty(folderNameTextField)) {
-                    showPopUpWarningValidation(frame);
-                    return;
-                }
-
-                //saving private key
-                saveKeyToFile(keyPair.getPrivate(), folderNameTextField.getText() + SLASH + privateKeyTextField.getText() + FULLSTOPS + PRIVATE_KEY_EXTENSION);
-
-                //saving public key
-                saveKeyToFile(keyPair.getPublic(), folderNameTextField.getText() + SLASH + publicKeyTextField.getText() + FULLSTOPS + PUBLIC_KEY_EXTENSION);
-
-                successActionWithPopUp(frame, SIGNING);
-            } catch (Exception ex) {
-                log.error("Error while saving key pair with file name: {}, {}",
-                    privateKeyTextField.getText(), publicKeyTextField.getText());
-                showPopUpError(frame);
-            }
-        });
+        saveButton.addActionListener(e -> saveLogic(privateKeyTextField, publicKeyTextField, folderNameTextField));
 
         backButton.addActionListener(e -> backActionWithPopUp(frame));
+    }
+
+    private void saveLogic(JTextField privateKeyTextField, JTextField publicKeyTextField,
+        JTextField folderNameTextField) {
+        try {
+            // Validate fields
+            if (isEmpty(privateKeyTextField) || isEmpty(publicKeyTextField) || isEmpty(folderNameTextField)) {
+                showPopUpWarningValidation(frame);
+                return;
+            }
+
+            //saving private key
+            saveKeyToFile(keyPair.getPrivate(), generateKeyPath(folderNameTextField, privateKeyTextField, PRIVATE_KEY));
+
+            //saving public key
+            saveKeyToFile(keyPair.getPublic(), generateKeyPath(folderNameTextField, publicKeyTextField, PUBLIC_KEY));
+
+            successActionWithPopUp(frame, SIGNING);
+        } catch (Exception ex) {
+            log.error("Error while saving key pair with file name: {}, {}",
+                privateKeyTextField.getText(), publicKeyTextField.getText());
+            showPopUpError(frame);
+        }
+    }
+
+    private String generateKeyPath(JTextField folderNameTextField, JTextField keyTextField, String keyType) {
+        if(keyType.equalsIgnoreCase(PRIVATE_KEY)){
+            return folderNameTextField.getText() + SLASH + keyTextField.getText() + FULLSTOPS + PRIVATE_KEY_EXTENSION;
+        }
+        return folderNameTextField.getText() + SLASH + keyTextField.getText() + FULLSTOPS + PUBLIC_KEY_EXTENSION;
     }
 
 }
