@@ -1,6 +1,7 @@
 package ecdsa.application.ui;
 
 import static ecdsa.application.constant.CommonConstant.BACK_TO_PREVIOUS_PAGE;
+import static ecdsa.application.constant.CommonConstant.BLACK_BIT;
 import static ecdsa.application.constant.CommonConstant.CONFIRMATION_DIALOG_TITLE;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
@@ -11,18 +12,29 @@ import static ecdsa.application.constant.CommonConstant.FULLSTOPS;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_BACK;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
+import static ecdsa.application.constant.CommonConstant.PDF;
 import static ecdsa.application.constant.CommonConstant.SAVE_TO_FILE;
-import static ecdsa.application.constant.CommonConstant.SIGNATURE_EXTENSION;
+import static ecdsa.application.constant.CommonConstant.SIGNED_AUTO_GENERATED_TEXT;
 import static ecdsa.application.constant.CommonConstant.SIGNED_FILE;
 import static ecdsa.application.constant.CommonConstant.SIGNING_RESULT_PAGE;
 import static ecdsa.application.constant.CommonConstant.SLASH;
 import static ecdsa.application.constant.CommonConstant.VERIFICATION;
+import static ecdsa.application.constant.CommonConstant.WHITE_BIT;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.Objects;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -34,6 +46,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.PDPageContentStream.AppendMode;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 /**
  * @author kareltan
@@ -126,7 +145,7 @@ public class SigningResultPageGUI extends NavigatorGUIAbstract{
 
                 //save signature to file
                 if(validateExtensionFile(chosenFileTextField.getText())){
-                    saveKeyToFile(signature, folderNameTextField.getText() + SLASH + signedFileTextField.getText() + FULLSTOPS + SIGNATURE_EXTENSION);
+                    saveConcatenatedSignatureToFile(folderNameTextField.getText() + SLASH + signedFileTextField.getText() + FULLSTOPS + PDF);
                 } else {
                     showPopUpWarningDocumentValidationType(frame);
                     return;
@@ -151,6 +170,67 @@ public class SigningResultPageGUI extends NavigatorGUIAbstract{
                 frame.dispose();
             }
         });
+    }
+
+    private void saveConcatenatedSignatureToFile(String targetedSavedFile) throws IOException {
+        PDDocument document = PDDocument.load(new File(filePath));
+        PDPage page = document.getPage(document.getNumberOfPages() - 1);
+
+        PDPageContentStream contentStream = new PDPageContentStream(document, page, AppendMode.APPEND, true, true);
+
+        // Generate the barcode image
+        BufferedImage barcodeImage = generateBarcodeImage(signature);
+
+        // Create PDImageXObject from BufferedImage
+        if(Objects.nonNull(barcodeImage)){
+            // Calculate the position to place the barcode in the left top of the page
+            float x = 25;
+            float y = page.getMediaBox().getHeight() - 100;
+
+            PDImageXObject pdImage = LosslessFactory.createFromImage(document, barcodeImage);
+
+            // Draw the barcode on the PDF
+            contentStream.drawImage(pdImage, x, y, 75, 75);
+
+            // Add text below the barcode
+            contentStream.beginText();
+            contentStream.setFont(PDType1Font.HELVETICA_BOLD, 10);
+            contentStream.newLineAtOffset(x + 10, y - 5);
+            String formattedDate = getFormattedDate();
+            contentStream.showText(SIGNED_AUTO_GENERATED_TEXT + formattedDate);
+            contentStream.endText();
+
+            contentStream.close();
+            document.save(new File(targetedSavedFile));
+            document.close();
+        } else {
+            log.error("error when saving file concat-ed with signature, barcode image has a null value!");
+            showPopUpError(this.frame);
+        }
+    }
+
+    private BufferedImage generateBarcodeImage(byte[] data) {
+        try {
+            // Set up QR code writer
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+
+            // Encode the data as a QR code
+            String base64EncodedData = Base64.getEncoder().encodeToString(data);
+            BitMatrix bitMatrix = qrCodeWriter.encode(base64EncodedData, BarcodeFormat.QR_CODE, 200, 200);
+
+            // Create a BufferedImage from the BitMatrix
+            BufferedImage image = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
+            for (int x = 0; x < 200; x++) {
+                for (int y = 0; y < 200; y++) {
+                    image.setRGB(x, y, bitMatrix.get(x, y) ? BLACK_BIT : WHITE_BIT);
+                }
+            }
+
+            return image;
+        } catch (WriterException e) {
+            log.error("error when generating barcode image with error: ", e);
+            return null;
+        }
     }
 
 }

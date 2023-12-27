@@ -1,8 +1,44 @@
 package ecdsa.application.ui;
 
-import ecdsa.application.cryptography.ECDSACryptographyAbstract;
+import static ecdsa.application.constant.CommonConstant.BC;
+import static ecdsa.application.constant.CommonConstant.BROWSE;
+import static ecdsa.application.constant.CommonConstant.CONFIRMATION_DIALOG_TITLE;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
+import static ecdsa.application.constant.CommonConstant.DOCUMENTS;
+import static ecdsa.application.constant.CommonConstant.EC;
+import static ecdsa.application.constant.CommonConstant.ERROR_DIALOG_MESSAGE;
+import static ecdsa.application.constant.CommonConstant.ERROR_DIALOG_TITLE;
+import static ecdsa.application.constant.CommonConstant.FOLDER;
+import static ecdsa.application.constant.CommonConstant.FORMAT_DATE_PRINT;
+import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_BACK;
+import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_CLEAR;
+import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED;
+import static ecdsa.application.constant.CommonConstant.PDF;
+import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY;
+import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY_EXTENSION;
+import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY;
+import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY_EXTENSION;
+import static ecdsa.application.constant.CommonConstant.SIGNATURE;
+import static ecdsa.application.constant.CommonConstant.SIGNATURE_EXTENSION;
+import static ecdsa.application.constant.CommonConstant.SIGNING;
+import static ecdsa.application.constant.CommonConstant.SUCCESS_DIALOG_TITLE;
+import static ecdsa.application.constant.CommonConstant.VERIFICATION;
+import static ecdsa.application.constant.CommonConstant.WARNING_EMPTY_FIELD_DIALOG_MESSAGE;
+import static ecdsa.application.constant.CommonConstant.WARNING_EMPTY_FIELD_DIALOG_TITLE;
+import static ecdsa.application.constant.CommonConstant.WARNING_EXTENSION_FILE_DIALOG_MESSAGE;
+import static ecdsa.application.constant.CommonConstant.WARNING_EXTENSION_FILE_DIALOG_TITLE;
+import static ecdsa.application.constant.CommonConstant.WARNING_KEY_NOT_VALID_DIALOG_MESSAGE;
+import static ecdsa.application.constant.CommonConstant.WARNING_KEY_NOT_VALID_DIALOG_TITLE;
+import static ecdsa.application.constant.CommonConstant.WARNING_SIGNATURE_NOT_VALID_DIALOG_MESSAGE;
+import static ecdsa.application.constant.CommonConstant.WARNING_SIGNATURE_NOT_VALID_DIALOG_TITLE;
 
-import java.awt.*;
+import ecdsa.application.cryptography.ECDSACryptographyAbstract;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,11 +54,24 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
-import javax.swing.*;
+import java.util.Date;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import static ecdsa.application.constant.CommonConstant.*;
 
 /**
  * @author kareltan
@@ -101,7 +150,7 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
 
             if(filterType.equalsIgnoreCase(DOCUMENTS)){
                 // Add a file filter to allow only doc, docx, and pdf files
-                FileNameExtensionFilter filter = new FileNameExtensionFilter(DOCUMENTS, DOC, DOCX, PDF);
+                FileNameExtensionFilter filter = new FileNameExtensionFilter(DOCUMENTS, PDF);
                 fileChooser.setFileFilter(filter);
                 fileChooser.setAcceptAllFileFilterUsed(false);
             } else if(filterType.equalsIgnoreCase(FOLDER)){
@@ -189,14 +238,6 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
        this.saveToFile(encodedKey, fileName);
     }
 
-    protected void saveKeyToFile(byte[] signature, String fileName) throws IOException {
-        // Convert key to Base64-encoded string
-        String encodedSignature = Base64.getEncoder().encodeToString(signature);
-
-        // Write the key to a file
-        this.saveToFile(encodedSignature, fileName);
-    }
-
     protected void saveToFile(String content, String fileName) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(fileName)) {
             fos.write(content.getBytes());
@@ -265,11 +306,14 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
         JOptionPane.showMessageDialog(frame, WARNING_KEY_NOT_VALID_DIALOG_MESSAGE, WARNING_KEY_NOT_VALID_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
     }
 
+    protected void showPopUpWarningSignatureNotValid(JFrame frame){
+        JOptionPane.showMessageDialog(frame, WARNING_SIGNATURE_NOT_VALID_DIALOG_MESSAGE, WARNING_SIGNATURE_NOT_VALID_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
+    }
+
     protected boolean isEmpty(JTextField textField) {
         return textField.getText().trim().isEmpty();
     }
 
-    // Helper method to read the content of a file
     protected String readFromFile(String filePath) throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(filePath));
         return new String(encoded, StandardCharsets.UTF_8);
@@ -280,7 +324,6 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
         return Files.readAllBytes(path);
     }
 
-    // Helper method to convert a Base64-encoded private key string to a PrivateKey object
     protected PrivateKey getPrivateKeyFromString(String privateKeyString)
         throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         addProvider();
@@ -303,29 +346,14 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
         JOptionPane.showMessageDialog(frame, ERROR_DIALOG_MESSAGE, ERROR_DIALOG_TITLE, JOptionPane.ERROR_MESSAGE);
     }
 
-    protected byte[] combineDataWithSignature(byte[] originalData, byte[] signature) {
-        // Concatenate the original data and the signature
-        byte[] combinedData = new byte[originalData.length + signature.length];
-        System.arraycopy(originalData, 0, combinedData, 0, originalData.length);
-        System.arraycopy(signature, 0, combinedData, originalData.length, signature.length);
-        return combinedData;
-    }
-
     protected boolean validateExtensionFile(String filePath){
-        return filePath.contains(DOC)
-            || filePath.contains(DOCX)
-            || filePath.contains(PDF);
-    }
-
-    protected boolean isWordExtensionFile(String filePath){
-        return filePath.contains(DOC)
-            || filePath.contains(DOCX);
-    }
-
-    protected boolean isPDFExtensionFile(String filePath){
         return filePath.contains(PDF);
     }
 
+    protected String getFormattedDate() {
+        Date date = new Date();
+        return new SimpleDateFormat(FORMAT_DATE_PRINT).format(date);
+    }
     protected JPanel createAboutAndQnAPage(String titleLabelText, String contentText) {
         JPanel aboutAndQnAPagePanel = new JPanel(new BorderLayout());
 

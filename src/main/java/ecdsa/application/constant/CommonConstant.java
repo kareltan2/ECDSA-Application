@@ -72,7 +72,7 @@ public class CommonConstant {
 
   public static final String SIGNED_FILE = SIGNED + WHITE_SPACE + FILE_NAME;
 
-  public static final String SIGNED_FILE_NAME_LABEL = SIGNED + WHITE_SPACE + FILE_NAME;
+  public static final String SIGNED_FILE_NAME_LABEL = SIGNED + WHITE_SPACE + FILE;
 
   public static final String DEFAULT_FONT = "Arial";
 
@@ -134,6 +134,10 @@ public class CommonConstant {
 
   public static final String WARNING_KEY_NOT_VALID_DIALOG_MESSAGE = "Inputted key is not valid, please check the inputted key file!";
 
+  public static final String WARNING_SIGNATURE_NOT_VALID_DIALOG_TITLE = "Signature is not valid!";
+
+  public static final String WARNING_SIGNATURE_NOT_VALID_DIALOG_MESSAGE = "Inputted signed file has an invalid signature barcode, please check the inputted signed file!";
+
   public static final String ERROR_DIALOG_TITLE = "Error Occurred";
 
   public static final String ERROR_DIALOG_MESSAGE = "There is error occurred, please try again!";
@@ -141,10 +145,6 @@ public class CommonConstant {
   public static final String CLEAR_INPUT = "Clear Input";
 
   public static final String BROWSE = "Browse";
-
-  public static final String DOC = "doc";
-
-  public static final String DOCX = "docx";
 
   public static final String PDF = "pdf";
 
@@ -249,5 +249,13 @@ public class CommonConstant {
           "256-bit hash function ensures a high level of collision resistance, " +
           "making it extremely difficult for two different documents to produce the same " +
           "hash value. This adds an extra layer of security to the signing and verification process.<br><br>";
+
+  public static final String FORMAT_DATE_PRINT = "EEEE, dd MMMM yyyy";
+
+  public static final String SIGNED_AUTO_GENERATED_TEXT = "Has been signed by author at ";
+
+  public static final int BLACK_BIT = 0xFF000000;
+
+  public static final int WHITE_BIT = 0xFFFFFFFF;
 
 }

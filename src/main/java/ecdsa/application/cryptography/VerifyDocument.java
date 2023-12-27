@@ -21,7 +21,7 @@ public class VerifyDocument extends ECDSACryptographyAbstract{
   public boolean verifySignature(String data, byte[] signature, PublicKey publicKey)
       throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, SignatureException {
     addProvider();
-    log.info("Starting verify signature with data: {}, signature: {}, publicKey: {}", data, signature, publicKey);
+    log.info("Starting verify signature: {}, publicKey: {}", signature, publicKey);
 
     Signature verifier = Signature.getInstance(SHA256_ECDSA, BC);
     verifier.initVerify(publicKey);
