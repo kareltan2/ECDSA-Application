@@ -66,7 +66,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
  * @author kareltan
  */
 @Slf4j
-public class VerificationPageGUI extends NavigatorGUIAbstract {
+public class VerificationPageGUI extends CommonAbstract {
 
   private final VerifyDocument verifyDocument = new VerifyDocument();
 

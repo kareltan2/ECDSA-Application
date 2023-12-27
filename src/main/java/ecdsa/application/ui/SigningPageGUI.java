@@ -49,7 +49,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author kareltan
  */
 @Slf4j
-public class SigningPageGUI extends NavigatorGUIAbstract {
+public class SigningPageGUI extends CommonAbstract {
 
     private final SignDocument signDocument = new SignDocument();
 

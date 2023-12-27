@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author kareltan
  */
 @Slf4j
-public class LandingPageGUI extends NavigatorGUIAbstract {
+public class LandingPageGUI extends CommonAbstract {
 
     private final JFrame frame;
 

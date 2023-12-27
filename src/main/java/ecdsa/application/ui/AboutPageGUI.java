@@ -1,13 +1,14 @@
 package ecdsa.application.ui;
 
-import javax.swing.*;
-
 import static ecdsa.application.constant.CommonConstant.ABOUT_DESCRIPTION;
+import static ecdsa.application.constant.CommonConstant.ABOUT_TITLE_LABEL;
 
-public class AboutPageGUI extends NavigatorGUIAbstract {
+import javax.swing.JPanel;
+
+public class AboutPageGUI extends CommonAbstract {
 
     public JPanel createAboutPage() {
-        return createAboutAndQnAPage("About Application", ABOUT_DESCRIPTION);
+        return createAboutAndQnAPage(ABOUT_TITLE_LABEL, ABOUT_DESCRIPTION);
     }
 
 }

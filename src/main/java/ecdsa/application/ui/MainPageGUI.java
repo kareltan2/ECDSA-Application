@@ -1,12 +1,14 @@
 package ecdsa.application.ui;
 
 import static ecdsa.application.constant.CommonConstant.ABOUT;
+import static ecdsa.application.constant.CommonConstant.ABOUT_PAGE;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_TITLE_TAB_PAGE;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
 import static ecdsa.application.constant.CommonConstant.KEY_GENERATION;
 import static ecdsa.application.constant.CommonConstant.KEY_GENERATION_PAGE;
 import static ecdsa.application.constant.CommonConstant.QNA;
+import static ecdsa.application.constant.CommonConstant.QNA_PAGE;
 import static ecdsa.application.constant.CommonConstant.SIGNING;
 import static ecdsa.application.constant.CommonConstant.SIGNING_PAGE;
 import static ecdsa.application.constant.CommonConstant.VERIFICATION;
@@ -27,7 +29,6 @@ public class MainPageGUI {
     private final JFrame frame;
 
     private final JTabbedPane tabbedPane;
-
 
     public MainPageGUI() {
         this.frame = new JFrame();
@@ -107,10 +108,10 @@ public class MainPageGUI {
                 frame.setTitle(VERIFICATION_PAGE);
                 break;
             case 3:
-                frame.setTitle(ABOUT);
+                frame.setTitle(ABOUT_PAGE);
                 break;
             case 4:
-                frame.setTitle(QNA);
+                frame.setTitle(QNA_PAGE);
                 break;
             default:
                 frame.setTitle(DEFAULT_TITLE_TAB_PAGE);

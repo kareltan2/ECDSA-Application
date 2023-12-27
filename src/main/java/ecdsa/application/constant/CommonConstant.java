@@ -98,6 +98,10 @@ public class CommonConstant {
 
   public static final String VERIFICATION_PAGE = VERIFICATION + WHITE_SPACE + PAGE;
 
+  public static final String ABOUT_PAGE = ABOUT + WHITE_SPACE + PAGE;
+
+  public static final String QNA_PAGE = QNA + WHITE_SPACE + PAGE;
+
   public static final String KEY_GENERATION_RESULT_PAGE = KEY_GENERATION + WHITE_SPACE + RESULT + WHITE_SPACE + PAGE;
 
   public static final String SIGNING_RESULT_PAGE = SIGNING + WHITE_SPACE + RESULT + WHITE_SPACE + PAGE;
@@ -257,5 +261,11 @@ public class CommonConstant {
   public static final int BLACK_BIT = 0xFF000000;
 
   public static final int WHITE_BIT = 0xFFFFFFFF;
+
+  public static final String QNA_TITLE_LABEL = "Frequently Asked Questions (FAQs)";
+
+  public static final String ABOUT_TITLE_LABEL = "About Application";
+
+  public static final String CONTENT_TYPE_QNA = "text/html";
 
 }

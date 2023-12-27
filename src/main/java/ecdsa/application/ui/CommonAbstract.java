@@ -3,6 +3,7 @@ package ecdsa.application.ui;
 import static ecdsa.application.constant.CommonConstant.BC;
 import static ecdsa.application.constant.CommonConstant.BROWSE;
 import static ecdsa.application.constant.CommonConstant.CONFIRMATION_DIALOG_TITLE;
+import static ecdsa.application.constant.CommonConstant.CONTENT_TYPE_QNA;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.DOCUMENTS;
 import static ecdsa.application.constant.CommonConstant.EC;
@@ -76,7 +77,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 /**
  * @author kareltan
  */
-public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
+public abstract class CommonAbstract extends ECDSACryptographyAbstract {
 
     protected JPanel createSectionPanel(String sectionTitle) {
         JPanel sectionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -354,6 +355,7 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
         Date date = new Date();
         return new SimpleDateFormat(FORMAT_DATE_PRINT).format(date);
     }
+
     protected JPanel createAboutAndQnAPage(String titleLabelText, String contentText) {
         JPanel aboutAndQnAPagePanel = new JPanel(new BorderLayout());
 
@@ -373,7 +375,7 @@ public abstract class NavigatorGUIAbstract extends ECDSACryptographyAbstract {
 
         JTextPane descriptionTextPane = new JTextPane();
         descriptionTextPane.setEditable(false);
-        descriptionTextPane.setContentType("text/html");
+        descriptionTextPane.setContentType(CONTENT_TYPE_QNA);
 
         descriptionTextPane.setText(contentText);
 

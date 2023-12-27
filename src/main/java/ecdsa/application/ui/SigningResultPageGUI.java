@@ -58,7 +58,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
  * @author kareltan
  */
 @Slf4j
-public class SigningResultPageGUI extends NavigatorGUIAbstract{
+public class SigningResultPageGUI extends CommonAbstract {
 
     private final JFrame frame;
 

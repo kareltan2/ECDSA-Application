@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author kareltan
  */
 @Slf4j
-public class KeyGenerationPageGUI extends NavigatorGUIAbstract {
+public class KeyGenerationPageGUI extends CommonAbstract {
 
     private final GenerateKeyPair generateKeyPair = new GenerateKeyPair();
 
