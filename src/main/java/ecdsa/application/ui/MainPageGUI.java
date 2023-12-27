@@ -2,6 +2,7 @@ package ecdsa.application.ui;
 
 import static ecdsa.application.constant.CommonConstant.ABOUT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
+import static ecdsa.application.constant.CommonConstant.DEFAULT_TITLE_TAB_PAGE;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
 import static ecdsa.application.constant.CommonConstant.KEY_GENERATION;
 import static ecdsa.application.constant.CommonConstant.KEY_GENERATION_PAGE;
@@ -25,12 +26,23 @@ public class MainPageGUI {
 
     private final JFrame frame;
 
+    private final JTabbedPane tabbedPane;
+
+
     public MainPageGUI() {
         this.frame = new JFrame();
+        this.tabbedPane = new JTabbedPane();
+        this.tabbedPane.setTabPlacement(SwingConstants.BOTTOM);
+
+        // Add a ChangeListener to the JTabbedPane
+        this.tabbedPane.addChangeListener(e -> {
+            // Update the frame title based on the selected tab
+            int selectedIndex = tabbedPane.getSelectedIndex();
+            updateFrameTitle(selectedIndex);
+        });
     }
 
     public void showGUI(int index) {
-        JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setTabPlacement(SwingConstants.BOTTOM);
 
         // Create panels for each menu
@@ -81,6 +93,29 @@ public class MainPageGUI {
 
     private JPanel createQnaPanel() {
         return new JPanel();
+    }
+
+    private void updateFrameTitle(int selectedIndex) {
+        // Set the frame title based on the selected tab
+        switch (selectedIndex) {
+            case 0:
+                frame.setTitle(KEY_GENERATION_PAGE);
+                break;
+            case 1:
+                frame.setTitle(SIGNING_PAGE);
+                break;
+            case 2:
+                frame.setTitle(VERIFICATION_PAGE);
+                break;
+            case 3:
+                frame.setTitle(ABOUT);
+                break;
+            case 4:
+                frame.setTitle(QNA);
+                break;
+            default:
+                frame.setTitle(DEFAULT_TITLE_TAB_PAGE);
+        }
     }
 
     public void closingFrame() {
