@@ -11,6 +11,7 @@ import static ecdsa.application.constant.CommonConstant.ERROR_DIALOG_MESSAGE;
 import static ecdsa.application.constant.CommonConstant.ERROR_DIALOG_TITLE;
 import static ecdsa.application.constant.CommonConstant.FOLDER;
 import static ecdsa.application.constant.CommonConstant.FORMAT_DATE_PRINT;
+import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_BACK;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_CLEAR;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED;
@@ -35,11 +36,10 @@ import static ecdsa.application.constant.CommonConstant.WARNING_SIGNATURE_NOT_VA
 
 import ecdsa.application.cryptography.ECDSACryptographyAbstract;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -68,7 +68,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
@@ -190,20 +189,16 @@ public abstract class CommonAbstract extends ECDSACryptographyAbstract {
         return panel;
     }
 
-    protected JPanel createLabelAndScrollPane(String labelText, String text) {
+    protected JPanel createMessageNotesBeforeAction() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
-        JLabel label = new JLabel(labelText);
-        JTextArea textArea = new JTextArea(text);
-        textArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        textArea.setMaximumSize(new Dimension(300, 150));
+        JLabel label = new JLabel(MESSAGE_CONTENT);
+        label.setForeground(Color.RED);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
 
         addRigidAreaForHorizontalSpacing(panel);
         panel.add(label);
-        addRigidAreaForSpacing(panel, 10, 0);
-        panel.add(scrollPane);
         addRigidAreaForHorizontalSpacing(panel);
 
         return panel;
@@ -368,10 +363,7 @@ public abstract class CommonAbstract extends ECDSACryptographyAbstract {
 
         aboutAndQnAPagePanel.add(titleLabel, BorderLayout.NORTH);
 
-        JPanel contentPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
+        JPanel contentPanel = new JPanel();
 
         JTextPane descriptionTextPane = new JTextPane();
         descriptionTextPane.setEditable(false);
@@ -385,7 +377,7 @@ public abstract class CommonAbstract extends ECDSACryptographyAbstract {
 
         scrollPane.setPreferredSize(new Dimension(600, 400));
 
-        contentPanel.add(scrollPane, gbc);
+        contentPanel.add(scrollPane);
         aboutAndQnAPagePanel.add(contentPanel, BorderLayout.CENTER);
 
         return aboutAndQnAPagePanel;
