@@ -9,7 +9,7 @@ This application is intended to protect data (in this case hand signature) and c
 
 # Features:
 - Generate Pair Key
-- Generate Signature (from pdf and words document only)
+- Generate Signature (from pdf document only)
 - Verify Document With Signature
 - QnA
 - About
