@@ -9,9 +9,7 @@ import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
 import static ecdsa.application.constant.CommonConstant.FILE_CHOSEN_LABEL;
 import static ecdsa.application.constant.CommonConstant.FOLDER;
 import static ecdsa.application.constant.CommonConstant.FULLSTOPS;
-import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_DIALOG_CONFIRMATION_BACK;
-import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
 import static ecdsa.application.constant.CommonConstant.PDF;
 import static ecdsa.application.constant.CommonConstant.SAVE_TO_FILE;
 import static ecdsa.application.constant.CommonConstant.SIGNED_AUTO_GENERATED_TEXT;
@@ -103,7 +101,7 @@ public class SigningResultPageGUI extends CommonAbstract {
         addRigidAreaForSpacing(mainPanel, 0, 10);
 
         // Add components for Message Notes
-        mainPanel.add(createLabelAndScrollPane(MESSAGE_NOTES_LABEL, MESSAGE_CONTENT));
+        mainPanel.add(createMessageNotesBeforeAction());
 
         // Add rigid area for spacing
         addRigidAreaForSpacing(mainPanel, 0, 10);

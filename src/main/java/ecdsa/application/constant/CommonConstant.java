@@ -110,11 +110,7 @@ public class CommonConstant {
 
   public static final String PLEASE_WAIT = "Please Wait...";
 
-  public static final String MESSAGE_NOTES = "Message Notes";
-
-  public static final String MESSAGE_NOTES_LABEL = MESSAGE_NOTES + COLON;
-
-  public static final String MESSAGE_CONTENT = "Please be careful when inputting file names";
+  public static final String MESSAGE_CONTENT = "<html><i>*Please be careful when inputting all required data!</i></html>";
 
   public static final String MESSAGE_DIALOG_CONFIRMATION_BACK = "Are you sure you want to back? All the data will be remove";
 
@@ -261,7 +257,29 @@ public class CommonConstant {
           "as a unique digital fingerprint for each document. The use of a " +
           "256-bit hash function ensures a high level of collision resistance, " +
           "making it extremely difficult for two different documents to produce the same " +
-          "hash value. This adds an extra layer of security to the signing and verification process.<br><br>";
+          "hash value. This adds an extra layer of security to the signing and verification process.<br><br>" +
+
+          "<b>Q6: How do I sign a document using this application?</b> <br>" +
+          "A6: <br>1. The signer initiates the key generation process. The system generates both a public key and a private key. "
+          + "The signer provides desired file names for both keys and specifies the path for saving. "
+          + "The public key is then shared with the verifier.<br>"
+          + "2. Sign the Received File: After receiving a file from the verifier, the signer inputs their private key "
+          + "and the received file. The system generates a signature, and the signer specifies the desired file name "
+          + "and path for saving the signed file.<br><br>" +
+
+          "<b>Q7: What is the process for verifying a signed document?</b> <br>" +
+          "A7: <br>1. Obtain Public Key and Signed File: The verifier must possess the public key shared by the signer and "
+          + "the signed file.<br> 2. Verify the Signed File: The verifier inputs the public key, the signed file, "
+          + "and the original file (without a signature). The system detects the signature. If the signature is valid, "
+          + "a popup message informs the verifier. In case of invalid signatures (e.g., signature not found, signed "
+          + "file not matching the original file), appropriate error messages are displayed.<br><br>" +
+
+          "<b>Q8: What is about page</b> <br>" +
+          "A8: The About page provides information about the ECDSA application, offering insights into its development.<br><br>" +
+
+          "<b>Q9: What is QnA page?</b> <br>" +
+          "A9: The QnA page serves as a user guide, offering step-by-step instructions on utilizing the application for "
+          + "signing and verification processes.<br><br>";
 
   public static final String FORMAT_DATE_PRINT = "EEEE, dd MMMM yyyy";
 

@@ -9,8 +9,6 @@ import static ecdsa.application.constant.CommonConstant.FULLSTOPS;
 import static ecdsa.application.constant.CommonConstant.KEY_GENERATION_RESULT_PAGE;
 import static ecdsa.application.constant.CommonConstant.LABEL_PRIVATE_KEY;
 import static ecdsa.application.constant.CommonConstant.LABEL_PUBLIC_KEY;
-import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
-import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
 import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY;
 import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY_EXTENSION;
 import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY;
@@ -93,7 +91,7 @@ public class KeyGenerationResultPageGUI extends CommonAbstract {
         addRigidAreaForSpacing(mainPanel, 0, 10);
 
         // Add components for Message Notes
-        mainPanel.add(createLabelAndScrollPane(MESSAGE_NOTES_LABEL, MESSAGE_CONTENT));
+        mainPanel.add(createMessageNotesBeforeAction());
 
         // Add rigid area for spacing
         addRigidAreaForSpacing(mainPanel, 0, 10);

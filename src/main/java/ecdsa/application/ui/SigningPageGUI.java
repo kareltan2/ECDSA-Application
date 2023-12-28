@@ -6,8 +6,6 @@ import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
 import static ecdsa.application.constant.CommonConstant.DOCUMENTS;
 import static ecdsa.application.constant.CommonConstant.LOADING;
-import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
-import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
 import static ecdsa.application.constant.CommonConstant.ORIGINAL_FILE;
 import static ecdsa.application.constant.CommonConstant.PLEASE_WAIT;
 import static ecdsa.application.constant.CommonConstant.PRIVATE_KEY;
@@ -75,7 +73,7 @@ public class SigningPageGUI extends CommonAbstract {
         signingPagePanel.add(createLabelAndFileInputForSavePath(fileTextField, ORIGINAL_FILE, frame, DOCUMENTS));
         addRigidAreaForSpacing(signingPagePanel, 0, 10);
 
-        signingPagePanel.add(createLabelAndScrollPane(MESSAGE_NOTES_LABEL, MESSAGE_CONTENT));
+        signingPagePanel.add(createMessageNotesBeforeAction());
         addRigidAreaForSpacing(signingPagePanel, 0, 10);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));

@@ -6,8 +6,6 @@ import static ecdsa.application.constant.CommonConstant.DEFAULT_FONT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_HEIGHT;
 import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
 import static ecdsa.application.constant.CommonConstant.DOCUMENTS;
-import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
-import static ecdsa.application.constant.CommonConstant.MESSAGE_NOTES_LABEL;
 import static ecdsa.application.constant.CommonConstant.ORIGINAL_FILE;
 import static ecdsa.application.constant.CommonConstant.PUBLIC_KEY;
 import static ecdsa.application.constant.CommonConstant.SIGNED_FILE_NAME_LABEL;
@@ -96,7 +94,7 @@ public class VerificationPageGUI extends CommonAbstract {
     verificationPagePanel.add(createLabelAndFileInputForSavePath(originalFileTextField, ORIGINAL_FILE, frame, DOCUMENTS));
     addRigidAreaForSpacing(verificationPagePanel, 0, 10);
 
-    verificationPagePanel.add(createLabelAndScrollPane(MESSAGE_NOTES_LABEL, MESSAGE_CONTENT));
+    verificationPagePanel.add(createMessageNotesBeforeAction());
     addRigidAreaForSpacing(verificationPagePanel, 0, 10);
 
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
