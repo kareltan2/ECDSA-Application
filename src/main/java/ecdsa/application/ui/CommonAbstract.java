@@ -270,8 +270,8 @@ public abstract class CommonAbstract extends ECDSACryptographyAbstract {
     }
 
     protected void successActionWithPopUp(JFrame frame, String nextAction) {
-        int result = JOptionPane .showConfirmDialog(frame,
-            MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED,
+        int result = JOptionPane.showConfirmDialog(frame,
+            String.format(MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED, nextAction.toLowerCase()),
             SUCCESS_DIALOG_TITLE, JOptionPane.YES_NO_OPTION
         );
 

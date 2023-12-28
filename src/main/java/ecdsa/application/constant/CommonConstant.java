@@ -124,7 +124,7 @@ public class CommonConstant {
 
   public static final String SUCCESS_DIALOG_TITLE = "Successfully Generated!";
 
-  public static final String MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED = SUCCESS_DIALOG_TITLE + WHITE_SPACE +  "Do you want to go to next step?";
+  public static final String MESSAGE_DIALOG_CONFIRMATION_SUCCESS_GENERATED = SUCCESS_DIALOG_TITLE + WHITE_SPACE +  "Do you want to go to %s page?";
 
   public static final String WARNING_EMPTY_FIELD_DIALOG_TITLE = "Validation Error";
 

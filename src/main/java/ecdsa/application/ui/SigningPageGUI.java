@@ -144,6 +144,7 @@ public class SigningPageGUI extends CommonAbstract {
         loadingDialog.setSize(300, 120);
         loadingDialog.setLocationRelativeTo(frame);
         loadingDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        loadingDialog.setResizable(false);
 
         try {
             // Read the content of the private key file
