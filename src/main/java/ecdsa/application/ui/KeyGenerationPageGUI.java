@@ -104,6 +104,7 @@ public class KeyGenerationPageGUI extends CommonAbstract {
         loadingDialog.setSize(300, 120);
         loadingDialog.setLocationRelativeTo(frame);
         loadingDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        loadingDialog.setResizable(false);
 
         //Generate key pair logic
         try {

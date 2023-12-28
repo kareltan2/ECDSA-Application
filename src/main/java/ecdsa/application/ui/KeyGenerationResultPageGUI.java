@@ -123,6 +123,7 @@ public class KeyGenerationResultPageGUI extends CommonAbstract {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        frame.setResizable(false);
 
         // Add action listeners for the buttons
         saveButton.addActionListener(e -> saveLogic(privateKeyTextField, publicKeyTextField, folderNameTextField));

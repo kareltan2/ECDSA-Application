@@ -68,6 +68,7 @@ public class MainPageGUI {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        frame.setResizable(false);
     }
 
     private JPanel createKeyGenerationPanel() {
