@@ -132,6 +132,7 @@ public class SigningResultPageGUI extends CommonAbstract {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.setResizable(false);
+        addListenerWhenExit(frame);
 
         // Add action listeners for the buttons
         saveButton.addActionListener(e -> saveLogic(signedFileTextField, chosenFileTextField, folderNameTextField));
@@ -180,7 +181,9 @@ public class SigningResultPageGUI extends CommonAbstract {
 
     private void saveConcatenatedSignatureToFile(String targetedSavedFile) throws IOException {
         PDDocument document = PDDocument.load(new File(filePath));
-        PDPage page = document.getPage(document.getNumberOfPages() - 1);
+        // Create a new page for the barcode
+        PDPage page = new PDPage();
+        document.addPage(page);
 
         PDPageContentStream contentStream = new PDPageContentStream(document, page, AppendMode.APPEND, true, true);
 

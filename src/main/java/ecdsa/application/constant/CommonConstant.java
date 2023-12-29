@@ -295,4 +295,8 @@ public class CommonConstant {
 
   public static final String CONTENT_TYPE_QNA = "text/html";
 
+  public static final String EXIT_WARNING_MESSAGE = "Are you sure you want to exit?";
+
+  public static final String EXIT_WARNING_TITLE = "Exit Confirmation";
+
 }
