@@ -121,6 +121,7 @@ public class LandingPageGUI extends CommonAbstract {
 
         // Set the frame to be visible
         frame.setVisible(true);
+        addListenerWhenExit(frame);
     }
 
     private Dimension setNewDimensionForButton() {

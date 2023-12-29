@@ -9,6 +9,8 @@ import static ecdsa.application.constant.CommonConstant.DOCUMENTS;
 import static ecdsa.application.constant.CommonConstant.EC;
 import static ecdsa.application.constant.CommonConstant.ERROR_DIALOG_MESSAGE;
 import static ecdsa.application.constant.CommonConstant.ERROR_DIALOG_TITLE;
+import static ecdsa.application.constant.CommonConstant.EXIT_WARNING_MESSAGE;
+import static ecdsa.application.constant.CommonConstant.EXIT_WARNING_TITLE;
 import static ecdsa.application.constant.CommonConstant.FOLDER;
 import static ecdsa.application.constant.CommonConstant.FORMAT_DATE_PRINT;
 import static ecdsa.application.constant.CommonConstant.MESSAGE_CONTENT;
@@ -40,6 +42,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -71,6 +75,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -381,6 +386,23 @@ public abstract class CommonAbstract extends ECDSACryptographyAbstract {
         aboutAndQnAPagePanel.add(contentPanel, BorderLayout.CENTER);
 
         return aboutAndQnAPagePanel;
+    }
+
+    public void addListenerWhenExit(JFrame frame) {
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int option = JOptionPane.showConfirmDialog(frame,
+                    EXIT_WARNING_MESSAGE, EXIT_WARNING_TITLE,
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+                if (option == JOptionPane.YES_OPTION) {
+                    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                } else {
+                    frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                }
+            }
+        });
     }
 
 }

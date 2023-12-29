@@ -24,7 +24,7 @@ import javax.swing.WindowConstants;
 /**
  * @author kareltan
  */
-public class MainPageGUI {
+public class MainPageGUI extends CommonAbstract {
 
     private final JFrame frame;
 
@@ -69,6 +69,7 @@ public class MainPageGUI {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.setResizable(false);
+        addListenerWhenExit(frame);
     }
 
     private JPanel createKeyGenerationPanel() {
