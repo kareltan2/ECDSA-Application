@@ -7,7 +7,7 @@ import static ecdsa.application.constant.CommonConstant.DEFAULT_WIDTH;
 import static ecdsa.application.constant.CommonConstant.DOCUMENTATION;
 import static ecdsa.application.constant.CommonConstant.LANDING_PAGE_DESCRIPTION;
 import static ecdsa.application.constant.CommonConstant.LANDING_PAGE_GUI;
-import static ecdsa.application.constant.CommonConstant.LANDING_PAGE_TITLE;
+import static ecdsa.application.constant.CommonConstant.LANDING_PAGE_TITLE_FIX;
 import static ecdsa.application.constant.CommonConstant.START;
 
 import java.awt.Dimension;
@@ -59,8 +59,8 @@ public class LandingPageGUI extends CommonAbstract {
         mainPanelConstraints.insets = new Insets(10, 10, 10, 10);
 
         // Create the titleLabel and add it to the main panel
-        JLabel titleLabel = new JLabel(LANDING_PAGE_TITLE);
-        Font fontTitle = new Font(DEFAULT_FONT, Font.BOLD, 20);
+        JLabel titleLabel = new JLabel(LANDING_PAGE_TITLE_FIX);
+        Font fontTitle = new Font(DEFAULT_FONT, Font.BOLD, 40);
         titleLabel.setFont(fontTitle);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         mainPanel.add(titleLabel, mainPanelConstraints);

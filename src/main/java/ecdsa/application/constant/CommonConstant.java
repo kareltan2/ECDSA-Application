@@ -76,7 +76,7 @@ public class CommonConstant {
 
   public static final String DEFAULT_FONT = "Arial";
 
-  public static final String APPLICATION_SLOGAN = "Empower Your Documents with Precision and Trust";
+  public static final String APPLICATION_SLOGAN = "Protect Your Documents with Precision and Trust";
 
   public static final String APPLICATION_DESCRIPTION = "Embark on a transformative journey into the future of document security with our<br>" +
           " revolutionary application! Introducing a groundbreaking experience in digital<br> signatures – witness the " +
@@ -168,6 +168,8 @@ public class CommonConstant {
       + "DENGAN PROSES SIGNING DAN VERIFICATION MENGGUNAKAN "
       + "<br>ALGORITMA ELLIPTIC CURVE DIGITAL SIGNATURE YANG MENGGUNAKAN "
       + "<br>FUNGSI HASH BERBASIS 256 BIT</div></html>";
+
+  public static final String LANDING_PAGE_TITLE_FIX = "DigiSigu";
 
   public static final String LANDING_PAGE_DESCRIPTION = "This application is designed for the secure development of digital signatures. "
       + "<br>It facilitates the signing and verification process using the Elliptic Curve Digital Signature Algorithm "
