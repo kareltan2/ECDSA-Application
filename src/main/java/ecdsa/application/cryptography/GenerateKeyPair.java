@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.maven.surefire.shared.lang3.tuple.Pair;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 
@@ -20,10 +21,12 @@ import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 @Slf4j
 public class GenerateKeyPair extends ECDSACryptographyAbstract {
 
-  public KeyPair generateKeyPair()
+  public Pair<KeyPair, Double> generateKeyPair()
       throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
     addProvider();
     log.info("Starting generate key pair with curve: {}", CURVE);
+
+    long startTime = System.nanoTime();
 
     ECNamedCurveParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(CURVE);
     KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(EC, BC);
@@ -31,10 +34,12 @@ public class GenerateKeyPair extends ECDSACryptographyAbstract {
 
     KeyPair keyPairGenerated = keyPairGenerator.generateKeyPair();
 
-    log.info("Successfully generated key pair with value, privateKey: {}, publicKey: {}",
-        keyPairGenerated.getPrivate().getEncoded(), keyPairGenerated.getPublic().getEncoded());
+    long endTime = System.nanoTime();
+    double elapsedTimeInSeconds = (endTime - startTime) / 1e9;
+    log.info("Successfully generated key pair with value, privateKey: {}, publicKey: {}, with elapsedTime: {}s",
+        keyPairGenerated.getPrivate().getEncoded(), keyPairGenerated.getPublic().getEncoded(), elapsedTimeInSeconds);
 
-    return keyPairGenerated;
+    return Pair.of(keyPairGenerated, elapsedTimeInSeconds);
   }
 
 }

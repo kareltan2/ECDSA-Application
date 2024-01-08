@@ -1,6 +1,5 @@
 package ecdsa.application.cryptography;
 
-import ecdsa.application.cryptography.GenerateKeyPair;
 import java.security.KeyPair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

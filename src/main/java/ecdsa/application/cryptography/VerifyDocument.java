@@ -23,12 +23,16 @@ public class VerifyDocument extends ECDSACryptographyAbstract{
     addProvider();
     log.info("Starting verify signature: {}, publicKey: {}", signature, publicKey);
 
+    long startTime = System.nanoTime();
     Signature verifier = Signature.getInstance(SHA256_ECDSA, BC);
     verifier.initVerify(publicKey);
     verifier.update(data.getBytes(StandardCharsets.UTF_8));
 
     boolean isVerified = verifier.verify(signature);
-    log.info("Completed verify signature with result: {}", isVerified);
+
+    long endTime = System.nanoTime();
+    double elapsedTimeInSeconds = (endTime - startTime) / 1e9;
+    log.info("Completed verify signature with result: {}, with elapsedTime: {}s", isVerified, elapsedTimeInSeconds);
 
     return isVerified;
   }

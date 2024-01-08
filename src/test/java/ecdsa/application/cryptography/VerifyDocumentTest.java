@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author kareltan
  */
-public class VerifyDocumentTest extends AbstractTestingVariable{
+public class VerifyDocumentTest extends AbstractTestingVariable {
 
   private final VerifyDocument verifyDocument = new VerifyDocument();
 

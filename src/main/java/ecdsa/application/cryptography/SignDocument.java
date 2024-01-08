@@ -1,7 +1,6 @@
 package ecdsa.application.cryptography;
 
 import static ecdsa.application.constant.CommonConstant.BC;
-import static ecdsa.application.constant.CommonConstant.CURVE;
 import static ecdsa.application.constant.CommonConstant.SHA256_ECDSA;
 
 import java.nio.charset.StandardCharsets;
@@ -12,6 +11,7 @@ import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.maven.surefire.shared.lang3.tuple.Pair;
 
 /**
  * @author kareltan
@@ -19,19 +19,23 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SignDocument extends ECDSACryptographyAbstract{
 
-  public byte[] signData(String data, PrivateKey privateKey)
+  public Pair<byte[], Double> signData(String data, PrivateKey privateKey)
       throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException {
     addProvider();
     log.info("Starting generate signature with data: {}, privateKey: {}", data, privateKey);
 
+    long startTime = System.nanoTime();
     Signature signature = Signature.getInstance(SHA256_ECDSA, BC);
     signature.initSign(privateKey);
     signature.update(data.getBytes(StandardCharsets.UTF_8));
 
     byte[] signatureBytes = signature.sign();
-    log.info("Successfully generate signature with value: {}", signatureBytes);
+    long endTime = System.nanoTime();
+    double elapsedTimeInSeconds = (endTime - startTime) / 1e9;
 
-    return signatureBytes;
+    log.info("Successfully generate signature with value: {}, with elapsedTime: {}s", signatureBytes, elapsedTimeInSeconds);
+
+    return Pair.of(signatureBytes, elapsedTimeInSeconds);
   }
 
 }
