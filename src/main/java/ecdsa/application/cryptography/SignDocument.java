@@ -11,7 +11,6 @@ import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.maven.surefire.shared.lang3.tuple.Pair;
 
 /**
  * @author kareltan
@@ -19,7 +18,7 @@ import org.apache.maven.surefire.shared.lang3.tuple.Pair;
 @Slf4j
 public class SignDocument extends ECDSACryptographyAbstract{
 
-  public Pair<byte[], Double> signData(String data, PrivateKey privateKey)
+  public byte[] signData(String data, PrivateKey privateKey)
       throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException {
     addProvider();
     log.info("Starting generate signature with data: {}, privateKey: {}", data, privateKey);
@@ -32,10 +31,9 @@ public class SignDocument extends ECDSACryptographyAbstract{
     byte[] signatureBytes = signature.sign();
     long endTime = System.nanoTime();
     double elapsedTimeInSeconds = (endTime - startTime) / 1e9;
-
     log.info("Successfully generate signature with value: {}, with elapsedTime: {}s", signatureBytes, elapsedTimeInSeconds);
 
-    return Pair.of(signatureBytes, elapsedTimeInSeconds);
+    return signatureBytes;
   }
 
 }
