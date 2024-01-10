@@ -39,14 +39,20 @@ import static ecdsa.application.constant.CommonConstant.WARNING_SIGNATURE_NOT_VA
 import ecdsa.application.cryptography.ECDSACryptographyAbstract;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -103,6 +109,34 @@ public abstract class CommonAbstract extends ECDSACryptographyAbstract {
                 BorderFactory.createEtchedBorder(),
                 BorderFactory.createEmptyBorder(verticalPadding, horizontalPadding, verticalPadding, horizontalPadding)
         ));
+
+        textPanel.add(textLabel);
+        return textPanel;
+    }
+
+    protected JPanel createTextPanelWithBorderClickable(String link) {
+        JPanel textPanel = new JPanel();
+        int horizontalPadding = 20;
+        int verticalPadding = 20;
+
+        JLabel textLabel = new JLabel("<html><div style='text-align: left;'><a href='" + link + "'>" + link + "</a></div></html>");
+        textLabel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createEtchedBorder(),
+            BorderFactory.createEmptyBorder(verticalPadding, horizontalPadding, verticalPadding, horizontalPadding)
+        ));
+
+        textLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        textLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    Desktop.getDesktop().browse(new URI(link));
+                } catch (IOException | URISyntaxException ex) {
+                    createTextPanelWithBorder(link);
+                }
+            }
+        });
 
         textPanel.add(textLabel);
         return textPanel;

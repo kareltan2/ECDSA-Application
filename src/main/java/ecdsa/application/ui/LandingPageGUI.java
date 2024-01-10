@@ -81,8 +81,7 @@ public class LandingPageGUI extends CommonAbstract {
         mainPanel.add(documentationPanel, mainPanelConstraints);
 
         // Create a panel for the documentation link text
-        //TODO: Input the link of the documentation
-        JPanel documentationTextPanel = createTextPanelWithBorder("will be input as link");
+        JPanel documentationTextPanel = createTextPanelWithBorderClickable("https://youtu.be/7EVgIFUBa60");
         mainPanelConstraints.gridy++;
         mainPanel.add(documentationTextPanel, mainPanelConstraints);
 
