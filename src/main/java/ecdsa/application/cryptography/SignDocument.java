@@ -24,7 +24,7 @@ public class SignDocument extends ECDSACryptographyAbstract{
   public byte[] signData(String data, PrivateKey privateKey)
       throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException {
     addProvider();
-    log.info("Starting generate signature with data: {}, privateKey: {}", data, privateKey);
+    log.info("Starting generate signature with privateKey: {}", privateKey);
 
     long startTime = System.nanoTime();
     Signature signature = Signature.getInstance(SHA256_ECDSA, BC);
